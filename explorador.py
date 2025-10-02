@@ -1,15 +1,11 @@
-# Explorador para el lenguaje Olympiac (scanner)
 from enum import Enum, auto
 import re
 
 class TipoComponente(Enum):
-    """
-    Enum con los tipos de componentes disponibles para Olympiac
-    """
     COMENTARIO = auto()
     PALABRA_CLAVE = auto()
-    TIPO_DATO = auto()
     DECLARACION = auto()
+    TIPO_DATO = auto()
     ESTRUCTURA_CONTROL = auto()
     FUNCION = auto()
     OPERADOR = auto()
@@ -20,72 +16,36 @@ class TipoComponente(Enum):
     FLOTANTE = auto()
     BOOLEANO = auto()
     PUNTUACION = auto()
-    DEPORTE = auto()
-    PAIS = auto()
-    ACTIVIDAD = auto()
-    RESULTADO = auto()
+    RESULTADO_EXTRA = auto()
+    EMPATE = auto()
     BLANCOS = auto()
     NINGUNO = auto()
 
-class ComponenteLéxico:
-    """
-    Clase que almacena la información de un componente léxico
-    """
-
-    tipo    : TipoComponente
-    texto   : str 
-
-    def __init__(self, tipo_nuevo: TipoComponente, texto_nuevo: str):
-        self.tipo = tipo_nuevo
-        self.texto = texto_nuevo
+class ComponenteLexico:
+    def __init__(self, tipo, texto):
+        self.tipo = tipo
+        self.texto = texto
 
     def __str__(self):
-        resultado = f'{self.tipo:30} <{self.texto}>'
-        return resultado
+        return f'{self.tipo:30} <{self.texto}>'
 
 class Explorador:
-    """
-    Explorador léxico para el lenguaje Olympiac
-    """
-
     descriptores_componentes = [
-        # Comentarios (deben ir primero)
         (TipoComponente.COMENTARIO, r'^;.*'),
-        
-        # Palabras clave y declaraciones
         (TipoComponente.DECLARACION, r'^(Deportista|Lista)'),
         (TipoComponente.TIPO_DATO, r'^(Pais|Deporte|Resultado)'),
-        
-        # Estructuras de control
         (TipoComponente.ESTRUCTURA_CONTROL, r'^(si|entonces|sino|endif|Repetir|RepetirHasta|FinRep|FinRepHast)'),
-        
-        # Funciones y acciones
-        (TipoComponente.FUNCION, r'^(narrar|comparar|input|probabilidad|preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|finact)'),
-        
-        # Actividades deportivas
-        (TipoComponente.ACTIVIDAD, r'^(partido|carrera|combate|rutina|competencia|medallas)'),
-        
-        # Operadores y comparadores
-        (TipoComponente.COMPARADOR, r'^(==|!=|>|<|>=|<=|vs)'),
+        (TipoComponente.FUNCION, r'^(narrar|Comparar\(|input\(|preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|finact)'),
+        (TipoComponente.RESULTADO_EXTRA, r'^(listaRes)'),
+        (TipoComponente.EMPATE, r'^(empate)'),
+        (TipoComponente.COMPARADOR, r'^(==|!=|>|<|>=|<=)'),
         (TipoComponente.OPERADOR, r'^(\+|-|\*|/|%)'),
-        
-        # Textos (entre comillas)
-        (TipoComponente.TEXTO, r'^"([^"\\]*(\\.[^"\\]*)*)"'),
-        
-        # Números
+        (TipoComponente.TEXTO, r'^"([^"\\]*(\\.[^"\\]*)*)?"'),
         (TipoComponente.FLOTANTE, r'^(-?[0-9]+\.[0-9]+)'),
         (TipoComponente.ENTERO, r'^(-?[0-9]+)'),
-        
-        # Booleanos
         (TipoComponente.BOOLEANO, r'^(True|False)'),
-        
-        # Identificadores (nombres de variables, países, deportes, etc.)
         (TipoComponente.IDENTIFICADOR, r'^([a-zA-Z_][a-zA-Z0-9_]*)'),
-        
-        # Puntuación
         (TipoComponente.PUNTUACION, r'^([(),;:{}\[\]\-])'),
-        
-        # Blancos (deben ir al final)
         (TipoComponente.BLANCOS, r'^(\s)+')
     ]
 
@@ -94,27 +54,18 @@ class Explorador:
         self.componentes = []
 
     def explorar(self):
-        """
-        Itera sobre cada una de las líneas y las va procesando
-        """
         for linea in self.texto:
             resultado = self.procesar_linea(linea)
-            self.componentes = self.componentes + resultado
+            self.componentes += resultado
 
     def imprimir_componentes(self):
-        """
-        Imprime en pantalla los componentes léxicos
-        """
         for componente in self.componentes:
             print(componente)
 
     def procesar_linea(self, linea):
-        """
-        Toma cada línea y la procesa extrayendo los componentes léxicos
-        """
         componentes = []
         posicion = 0
-        linea = linea.rstrip()  # Remover espacios al final
+        linea = linea.rstrip()
 
         while posicion < len(linea):
             segmento = linea[posicion:]
@@ -122,43 +73,55 @@ class Explorador:
 
             for tipo_componente, regex in self.descriptores_componentes:
                 respuesta = re.match(regex, segmento)
-                
                 if respuesta:
-                    texto_coincidencia = respuesta.group()
-                    
-                    # Ignorar comentarios y blancos
-                    if (tipo_componente is not TipoComponente.BLANCOS and 
-                        tipo_componente is not TipoComponente.COMENTARIO):
-                        
-                        nuevo_componente = ComponenteLéxico(tipo_componente, texto_coincidencia)
-                        componentes.append(nuevo_componente)
-                    
+                    texto = respuesta.group()
+                    if tipo_componente not in [TipoComponente.BLANCOS, TipoComponente.COMENTARIO]:
+                        componentes.append(ComponenteLexico(tipo_componente, texto))
                     posicion += respuesta.end()
                     coincidencia_encontrada = True
                     break
-            
+
             if not coincidencia_encontrada:
-                # Manejo de error: carácter no reconocido
                 print(f"Error léxico: Carácter no reconocido '{segmento[0]}' en posición {posicion}")
-                posicion += 1  # Saltar el carácter problemático
+                posicion += 1
 
         return componentes
 
 # Ejemplo de uso
 if __name__ == "__main__":
-    # Código de ejemplo en Olympiac
     codigo_ejemplo = [
+        '; Inicio del programa',
         'Deportista atleta1 25 180 75 "Fútbol" "Argentina"',
-        'Deportista atleta2 30 150 65 "Fútbol" "Alemania"',
-        'si comparar(atleta1, atleta2) > 0 entonces',
-        '    narrar("El atleta1 es mejor")',
-        'endif;',
+        'Deportista atleta2 30 175 70 "Fútbol" "Brasil"',
         'Lista Deportista lista_competidores',
-        'Repetir(5)',
-        '    narrar("Competencia")',
-        'FinRep'
+        'si Comparar(atleta1, atleta2) > 0 entonces {',
+        '    narrar("El atleta1 tiene mejor rendimiento")',
+        '} sino {',
+        '    narrar("El atleta2 es superior")',
+        '} endif',
+        'Repetir(3) [',
+        '    narrar("Entrenamiento diario")',
+        '    input(Pais)',
+        '] FinRep',
+        'RepetirHasta(Comparar(atleta1, atleta2) == 0) [',
+        '    narrar("Seguimos entrenando hasta igualar rendimiento")',
+        '] FinRepHast',
+        'Bloque',
+        'Fútbol',
+        '    Lista Deportista lista_partido',
+        '    competencia',
+        '        partido',
+        '            Argentina vs Brasil',
+        '            Comparar(Argentina, Brasil)',
+        '            narrar(Deportista "vs" Deportista)',
+        '            empate',
+        '            Resultado 2 - 2',
+        '            listaRes',
+        '        finact',
+        '    medallas',
+        'narrar("Fin del bloque deportivo")'
     ]
-    
+
     explorador = Explorador(codigo_ejemplo)
     explorador.explorar()
     explorador.imprimir_componentes()
