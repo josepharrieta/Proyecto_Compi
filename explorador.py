@@ -91,8 +91,8 @@ class Explorador:
 if __name__ == "__main__":
     codigo_ejemplo = [
         '; Inicio del programa',
-        'Deportista atleta1 25 180 75 "Fútbol" "Argentina"',
-        'Deportista atleta2 30 175 70 "Fútbol" "Brasil"',
+        'Deportista atleta1 25 80 75 "Fútbol" "Argentina"',
+        'Deportista atleta2 30 75 70 "Fútbol" "Brasil"',
         'Lista Deportista lista_competidores',
         'si Comparar(atleta1, atleta2) > 0 entonces {',
         '    narrar("El atleta1 tiene mejor rendimiento")',
