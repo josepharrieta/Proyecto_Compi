@@ -195,13 +195,7 @@ class AnalizadorLexico:
     def _procesar_linea_individual(self, linea_codigo, numero_linea):
         """
         Procesa una línea individual del código fuente y extrae todos sus tokens.
-        
-        Entradas:
-            linea_codigo (str): La línea de código a procesar
-            numero_linea (int): Número de línea para referencia de errores
-            
-        Salida:
-            list: Lista de tokens encontrados en la línea
+        VERSIÓN MEJORADA con manejo de Unicode y errores.
         """
         tokens_linea = []
         posicion_actual = 0
@@ -224,7 +218,7 @@ class AnalizadorLexico:
                             texto_token, 
                             informacion_semantica,
                             numero_linea,
-                            posicion_actual + 1  # Columna inicia en 1
+                            posicion_actual + 1
                         )
                         tokens_linea.append(nuevo_token)
                     
@@ -234,13 +228,26 @@ class AnalizadorLexico:
 
             if not token_encontrado:
                 caracter_problematico = segmento_restante[0]
-                try:
-                    caracter_mostrable = repr(caracter_problematico)
-                except:
-                    caracter_mostrable = f"ord({ord(caracter_problematico)})"
                 
-                print(f"ERROR LÉXICO: Carácter no reconocido {caracter_mostrable} "
-                      f"en línea {numero_linea}, columna {posicion_actual + 1}")
+                try:
+                    if ord(caracter_problematico) < 128:
+                        caracter_mostrable = f"'{caracter_problematico}'"
+                    else:
+                        caracter_mostrable = f"Unicode U+{ord(caracter_problematico):04X}"
+                    
+                    if ord(caracter_problematico) > 127:
+                        tipo_error = "caracter Unicode no soportado"
+                    elif caracter_problematico in '@#$%&^*=~':
+                        tipo_error = "simbolo no definido en la gramatica"
+                    else:
+                        tipo_error = "caracter no reconocido"
+                    
+                    mensaje_error = f"ERROR LEXICO: {tipo_error} {caracter_mostrable} en linea {numero_linea}, columna {posicion_actual + 1}"
+                    print(mensaje_error)
+                    
+                except Exception as e:
+                    print(f"ERROR LEXICO: caracter problematico (ord={ord(caracter_problematico)}) en linea {numero_linea}, columna {posicion_actual + 1}")
+                
                 self.contador_errores_lexicos += 1
                 posicion_actual += 1
 
@@ -374,7 +381,7 @@ def main():
     Función principal que ejecuta solo el ejemplo básico del analizador.
     Para pruebas completas, ejecutar test_explorador.py
     """
-    print("🔍 ANALIZADOR LÉXICO OLYMPIAC - EJEMPLO BÁSICO")
+    print("ANALIZADOR LÉXICO OLYMPIAC - EJEMPLO BÁSICO")
     print("=" * 50)
     print("Para pruebas completas, ejecutar: python test_explorador.py")
     print("=" * 50)
@@ -382,8 +389,8 @@ def main():
     ejecutar_ejemplo_analisis()
     
     print("\n" + "=" * 50)
-    print("✅ Ejemplo básico completado")
-    print("📝 Para ver todas las pruebas: python test_explorador.py")
+    print("Ejemplo básico completado")
+    print("Para ver todas las pruebas: python test_explorador.py")
     print("=" * 50)
 
 
