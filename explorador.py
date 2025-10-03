@@ -369,6 +369,24 @@ def ejecutar_ejemplo_analisis():
     analizador_deportivo.mostrar_tokens_encontrados()
 
 
+def main():
+    """
+    Función principal que ejecuta solo el ejemplo básico del analizador.
+    Para pruebas completas, ejecutar test_explorador.py
+    """
+    print("🔍 ANALIZADOR LÉXICO OLYMPIAC - EJEMPLO BÁSICO")
+    print("=" * 50)
+    print("Para pruebas completas, ejecutar: python test_explorador.py")
+    print("=" * 50)
+    
+    ejecutar_ejemplo_analisis()
+    
+    print("\n" + "=" * 50)
+    print("✅ Ejemplo básico completado")
+    print("📝 Para ver todas las pruebas: python test_explorador.py")
+    print("=" * 50)
+
+
 # Punto de entrada principal del programa
 if __name__ == "__main__":
-    ejecutar_ejemplo_analisis()
+    main()
