@@ -133,7 +133,7 @@ class AnalizadorLexico:
         (TipoToken.COMENTARIO, r'^;.*', "Comentario de línea completa"),
         (TipoToken.DECLARACION_ENTIDAD, r'^(Deportista|Lista)', "Declaración de entidad del dominio"),
         (TipoToken.TIPO_DATO_DOMINIO, r'^(Pais|Deporte|Resultado)', "Tipo de dato específico del dominio"),
-        (TipoToken.ESTRUCTURA_CONTROL_FLUJO, r'^(si|entonces|sino|endif|Repetir|RepetirHasta|FinRep|FinRepHast)', "Estructura de control de flujo"),
+        (TipoToken.ESTRUCTURA_CONTROL_FLUJO,r'^(RepetirHasta|FinRepHast|Repetir|FinRep|si|entonces|sino|endif)\b', "Estructura de control de flujo"),
         (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
         (TipoToken.PALABRA_CLAVE, r'^(preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|finact|ceremonia_medallas|competencia_oficial|partido_clasificatorio)', "Palabras clave del dominio"),
         (TipoToken.RESULTADO_ADICIONAL, r'^(listaRes)', "Token específico para listas de resultados"),
@@ -143,7 +143,7 @@ class AnalizadorLexico:
         (TipoToken.OPERADOR_ARITMETICO, r'^(\+|-|\*|/|%)', "Operador aritmético básico"),
         (TipoToken.NUMERO_ENTERO, r'^([0-9]+)', "Número entero positivo"),
         (TipoToken.VALOR_BOOLEANO, r'^(True|False)', "Valor lógico booleano"),
-        (TipoToken.NOMBRE_IDENTIFICADOR, r'^([a-zA-Z_][a-zA-Z0-9_]*)', "Identificador válido"),
+        (TipoToken.NOMBRE_IDENTIFICADOR, r'^(\w+)', "Identificador válido"),
         (TipoToken.SIMBOLO_PUNTUACION, r'^([(),;:{}\[\]\.-])', "Símbolo de puntuación o delimitador"),
         (TipoToken.ESPACIOS_BLANCOS, r'^(\s)+', "Espacios en blanco y caracteres de formato")
     ]
