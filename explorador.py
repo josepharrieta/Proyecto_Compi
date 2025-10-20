@@ -9,7 +9,7 @@ funciones y operadores.
 
 Autores: [Kevin Núñez, Axel López, Felipe Murillo, Joseph Arrieta, Arturo Chavarría]
 Fecha: Octubre 2025
-Versión: 1.0
+Versión: 1.1
 
 Dependencias:
 - enum: Para definir tipos de componentes léxicos
@@ -113,6 +113,31 @@ class TokenLexico:
             str: Representación técnica del token
         """
         return f"TokenLexico({self.tipo_token}, '{self.texto_original}', '{self.informacion_adicional}')"
+    
+    def to_dict(self):
+        """
+        Convierte el token a un diccionario para fácil acceso y serialización.
+        
+        Salida:
+            dict: Diccionario con toda la información del token
+        """
+        return {
+            'tipo': self.tipo_token.name,
+            'texto': self.texto_original,
+            'info': self.informacion_adicional,
+            'linea': self.numero_linea,
+            'columna': self.posicion_columna
+        }
+    
+    def to_tuple(self):
+        """
+        Convierte el token a una tupla para estructuras de datos ligeras.
+        
+        Salida:
+            tuple: Tupla con (tipo, texto, info, linea, columna)
+        """
+        return (self.tipo_token.name, self.texto_original, self.informacion_adicional, 
+                self.numero_linea, self.posicion_columna)
 
 
 class AnalizadorLexico:
@@ -129,11 +154,14 @@ class AnalizadorLexico:
         patrones_reconocimiento (list): Patrones regex para cada tipo de token
         contador_errores_lexicos (int): Número de errores léxicos encontrados
     """
+    
+    # Patrones de expresiones regulares para cada tipo de token
+    # Ordenados por prioridad de coincidencia (más específicos primero)
     patrones_reconocimiento = [
         (TipoToken.COMENTARIO, r'^;.*', "Comentario de línea completa"),
         (TipoToken.DECLARACION_ENTIDAD, r'^(Deportista|Lista)', "Declaración de entidad del dominio"),
         (TipoToken.TIPO_DATO_DOMINIO, r'^(Pais|Deporte|Resultado)', "Tipo de dato específico del dominio"),
-        (TipoToken.ESTRUCTURA_CONTROL_FLUJO,r'^(RepetirHasta|FinRepHast|Repetir|FinRep|si|entonces|sino|endif)\b', "Estructura de control de flujo"),
+        (TipoToken.ESTRUCTURA_CONTROL_FLUJO, r'^(si|entonces|sino|endif|Repetir|RepetirHasta|FinRep|FinRepHast)', "Estructura de control de flujo"),
         (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
         (TipoToken.PALABRA_CLAVE, r'^(preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|finact|ceremonia_medallas|competencia_oficial|partido_clasificatorio)', "Palabras clave del dominio"),
         (TipoToken.RESULTADO_ADICIONAL, r'^(listaRes)', "Token específico para listas de resultados"),
@@ -143,7 +171,7 @@ class AnalizadorLexico:
         (TipoToken.OPERADOR_ARITMETICO, r'^(\+|-|\*|/|%)', "Operador aritmético básico"),
         (TipoToken.NUMERO_ENTERO, r'^([0-9]+)', "Número entero positivo"),
         (TipoToken.VALOR_BOOLEANO, r'^(True|False)', "Valor lógico booleano"),
-        (TipoToken.NOMBRE_IDENTIFICADOR, r'^(\w+)', "Identificador válido"),
+        (TipoToken.NOMBRE_IDENTIFICADOR, r'^([a-zA-Z_][a-zA-Z0-9_]*)', "Identificador válido"),
         (TipoToken.SIMBOLO_PUNTUACION, r'^([(),;:{}\[\]\.-])', "Símbolo de puntuación o delimitador"),
         (TipoToken.ESPACIOS_BLANCOS, r'^(\s)+', "Espacios en blanco y caracteres de formato")
     ]
@@ -158,6 +186,7 @@ class AnalizadorLexico:
         self.codigo_fuente_lineas = codigo_fuente_lineas
         self.tokens_encontrados = []
         self.contador_errores_lexicos = 0
+        self.errores_detallados = []
 
     def analizar_codigo_completo(self):
         """
@@ -171,6 +200,7 @@ class AnalizadorLexico:
         """
         self.tokens_encontrados.clear()
         self.contador_errores_lexicos = 0
+        self.errores_detallados.clear()
         
         for numero_linea, linea_codigo in enumerate(self.codigo_fuente_lineas, 1):
             tokens_linea = self._procesar_linea_individual(linea_codigo, numero_linea)
@@ -179,23 +209,90 @@ class AnalizadorLexico:
         tokens_validos = [t for t in self.tokens_encontrados if t.tipo_token != TipoToken.ESPACIOS_BLANCOS]
         return len(tokens_validos)
 
-    def mostrar_tokens_encontrados(self):
+    def obtener_tokens(self, incluir_espacios=False):
         """
-        Imprime todos los tokens encontrados durante el análisis en el formato requerido.
+        Retorna la lista de tokens encontrados.
         
-        Muestra cada token con su tipo, texto original e información adicional.
-        Excluye los espacios en blanco para una salida más limpia.
+        Entradas:
+            incluir_espacios (bool): Si True, incluye tokens de espacios en blanco. Por defecto False.
+            
+        Salida:
+            list: Lista de objetos TokenLexico
         """
-        tokens_mostrar = [token for token in self.tokens_encontrados 
-                        if token.tipo_token != TipoToken.ESPACIOS_BLANCOS]
+        if incluir_espacios:
+            return self.tokens_encontrados.copy()
+        else:
+            return [t for t in self.tokens_encontrados if t.tipo_token != TipoToken.ESPACIOS_BLANCOS]
+
+    def obtener_tokens_como_diccionarios(self, incluir_espacios=False):
+        """
+        Retorna los tokens como lista de diccionarios.
         
-        for token in tokens_mostrar:
-            print(token)
+        Entradas:
+            incluir_espacios (bool): Si True, incluye tokens de espacios en blanco. Por defecto False.
+            
+        Salida:
+            list: Lista de diccionarios con información de cada token
+        """
+        tokens = self.obtener_tokens(incluir_espacios)
+        return [token.to_dict() for token in tokens]
+
+    def obtener_tokens_como_tuplas(self, incluir_espacios=False):
+        """
+        Retorna los tokens como lista de tuplas.
+        
+        Entradas:
+            incluir_espacios (bool): Si True, incluye tokens de espacios en blanco. Por defecto False.
+            
+        Salida:
+            list: Lista de tuplas (tipo, texto, info, linea, columna)
+        """
+        tokens = self.obtener_tokens(incluir_espacios)
+        return [token.to_tuple() for token in tokens]
+
+    def obtener_errores(self):
+        """
+        Retorna la lista de errores léxicos encontrados.
+        
+        Salida:
+            list: Lista de diccionarios con información de cada error
+        """
+        return self.errores_detallados.copy()
+
+    def obtener_resumen(self):
+        """
+        Retorna un resumen del análisis léxico realizado.
+        
+        Salida:
+            dict: Diccionario con estadísticas del análisis
+        """
+        tokens_validos = self.obtener_tokens()
+        
+        resumen = {
+            'total_lineas': len(self.codigo_fuente_lineas),
+            'total_tokens': len(tokens_validos),
+            'total_errores': self.contador_errores_lexicos,
+            'tokens_por_tipo': {},
+            'tiene_errores': self.contador_errores_lexicos > 0
+        }
+        
+        for token in tokens_validos:
+            tipo_nombre = token.tipo_token.name
+            resumen['tokens_por_tipo'][tipo_nombre] = resumen['tokens_por_tipo'].get(tipo_nombre, 0) + 1
+        
+        return resumen
 
     def _procesar_linea_individual(self, linea_codigo, numero_linea):
         """
         Procesa una línea individual del código fuente y extrae todos sus tokens.
         VERSIÓN MEJORADA con manejo de Unicode y errores.
+        
+        Entradas:
+            linea_codigo (str): La línea de código a procesar
+            numero_linea (int): Número de línea para referencia de errores
+            
+        Salida:
+            list: Lista de tokens encontrados en la línea
         """
         tokens_linea = []
         posicion_actual = 0
@@ -242,11 +339,25 @@ class AnalizadorLexico:
                     else:
                         tipo_error = "caracter no reconocido"
                     
-                    mensaje_error = f"ERROR LEXICO: {tipo_error} {caracter_mostrable} en linea {numero_linea}, columna {posicion_actual + 1}"
-                    print(mensaje_error)
+                    # Guardar error en lista
+                    error_info = {
+                        'tipo': tipo_error,
+                        'caracter': caracter_mostrable,
+                        'linea': numero_linea,
+                        'columna': posicion_actual + 1,
+                        'mensaje': f"ERROR LEXICO: {tipo_error} {caracter_mostrable} en linea {numero_linea}, columna {posicion_actual + 1}"
+                    }
+                    self.errores_detallados.append(error_info)
                     
                 except Exception as e:
-                    print(f"ERROR LEXICO: caracter problematico (ord={ord(caracter_problematico)}) en linea {numero_linea}, columna {posicion_actual + 1}")
+                    error_info = {
+                        'tipo': 'error desconocido',
+                        'caracter': f"ord({ord(caracter_problematico)})",
+                        'linea': numero_linea,
+                        'columna': posicion_actual + 1,
+                        'mensaje': f"ERROR LEXICO: caracter problematico (ord={ord(caracter_problematico)}) en linea {numero_linea}, columna {posicion_actual + 1}"
+                    }
+                    self.errores_detallados.append(error_info)
                 
                 self.contador_errores_lexicos += 1
                 posicion_actual += 1
@@ -320,80 +431,5 @@ class AnalizadorLexico:
         else:
             return "Token reconocido"
 
-
-def ejecutar_ejemplo_analisis():
-    """
-    Función de demostración que ejecuta el analizador con código de ejemplo.
-    El código incluye indentación adecuada para mostrar la estructura jerárquica.
-    """
-    codigo_ejemplo_deportivo = [
-        '; Programa de gestion deportiva con estructura',
-        'Deportista atleta_principal 25 80 75 Futbol Argentina',
-        'Lista Deportista lista_competidores',
-        'si Comparar(atleta_principal, lista_competidores) > 0 entonces {',
-        '    narrar(atleta_principal)',
-        '    si atleta_principal > 50 entonces {',
-        '        narrar(excelente)',
-        '    } endif',
-        '} sino {',
-        '    narrar(atleta_secundario)',
-        '} endif',
-        'Repetir(3) [',
-        '    narrar(entrenamiento)',
-        '    Repetir(2) [',
-        '        input(ejercicio)',
-        '    ] FinRep',
-        '] FinRep',
-        'RepetirHasta(Comparar(atleta_principal, lista_competidores) == 0) [',
-        '    input(Argentina)',
-        '    preparacion',
-        '        Deportista corredor1 30 85 90 Atletismo Chile',
-        '        Deportista corredor2 28 82 88 Atletismo Peru',
-        '    finprep',
-        '] FinRepHast',
-        'Futbol',
-        '    Lista Deportista participantes_torneo',
-        '    competencia_mundial',
-        '        partido_semifinal',
-        '            Argentina vs Brasil',
-        '            Comparar(Argentina, Brasil)',
-        '            narrar(resultado_partido)',
-        '            empate',
-        '            Resultado 2 - 1',
-        '            listaRes',
-        '        finact',
-        '        partido_final',
-        '            España vs Francia',
-        '            Comparar(España, Francia)',
-        '            Resultado 3 - 0',
-        '        finact',
-        '    ceremonia_medallas',
-        'narrar(fin_programa)'
-    ]
-
-    analizador_deportivo = AnalizadorLexico(codigo_ejemplo_deportivo)
-    analizador_deportivo.analizar_codigo_completo()
-    analizador_deportivo.mostrar_tokens_encontrados()
-
-
-def main():
-    """
-    Función principal que ejecuta solo el ejemplo básico del analizador.
-    Para pruebas completas, ejecutar test_explorador.py
-    """
-    print("ANALIZADOR LÉXICO OLYMPIAC - EJEMPLO BÁSICO")
-    print("=" * 50)
-    print("Para pruebas completas, ejecutar: python test_explorador.py")
-    print("=" * 50)
-    
-    ejecutar_ejemplo_analisis()
-    
-    print("\n" + "=" * 50)
-    print("Ejemplo básico completado")
-    print("Para ver todas las pruebas: python test_explorador.py")
-    print("=" * 50)
-
-
-# Punto de entrada principal del programa
 if __name__ == "__main__":
-    main()
+    print("MODULO ANALIZADOR LEXICO OLYMPIAC")
