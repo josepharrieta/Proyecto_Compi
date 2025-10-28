@@ -2,19 +2,25 @@
 Lector de Archivos Olympiac
 ============================
 
-Este módulo lee archivos con código Olympiac (.oly) y los procesa usando
-el analizador léxico.
+Este módulo coordina el flujo completo de análisis de archivos Olympiac:
+1. Lee archivos .oly
+2. Envía el contenido al explorador (analizador léxico)
+3. Recibe los tokens del explorador
+4. Envía los tokens al analizador sintáctico
+5. Retorna el AST generado
 
 Autores: [Kevin Núñez, Axel López, Felipe Murillo, Joseph Arrieta, Arturo Chavarría]
 Fecha: Octubre 2025
-Versión: 1.0
+Versión: 2.0
 
 Dependencias:
 - explorador: Módulo del analizador léxico
+- analizador_sintactico: Módulo del analizador sintáctico
 """
 
 import os
 from explorador import AnalizadorLexico
+from analizador_sintactico import parse_from_tokens
 
 
 def leer_archivo_olympiac(ruta_archivo):
@@ -47,9 +53,86 @@ def leer_archivo_olympiac(ruta_archivo):
         raise Exception(f"Error al leer el archivo {ruta_archivo}: {str(e)}")
 
 
+def enviar_a_explorador(lineas_codigo):
+    """
+    Envía las líneas de código al explorador (analizador léxico) para obtener tokens.
+    
+    Entradas:
+        lineas_codigo (list): Lista de líneas de código a analizar
+        
+    Salida:
+        tuple: (tokens, analizador) - Lista de tokens y objeto analizador para acceso a errores
+    """
+    # Crear analizador léxico
+    analizador = AnalizadorLexico(lineas_codigo)
+    
+    # Analizar código completo
+    analizador.analizar_codigo_completo()
+    
+    # Obtener tokens (sin espacios en blanco)
+    tokens = analizador.obtener_tokens(incluir_espacios=False)
+    
+    return tokens, analizador
+
+
+def enviar_a_analizador_sintactico(tokens):
+    """
+    Envía los tokens al analizador sintáctico para construir el AST.
+    
+    Entradas:
+        tokens (list): Lista de tokens léxicos
+        
+    Salida:
+        ASTNode: Árbol de sintaxis abstracta (AST) generado
+    """
+    # Parsear tokens y construir AST
+    ast = parse_from_tokens(tokens)
+    
+    return ast
+
+
+def procesar_archivo_completo(ruta_archivo):
+    """
+    FUNCIÓN PRINCIPAL: Procesa un archivo Olympiac completo.
+    
+    Flujo:
+    1. Lee el archivo .oly
+    2. Envía líneas al explorador
+    3. Recibe tokens del explorador
+    4. Envía tokens al analizador sintáctico
+    5. Retorna el AST
+    
+    Entradas:
+        ruta_archivo (str): Ruta al archivo .oly a procesar
+        
+    Salida:
+        dict: Diccionario con 'ast', 'tokens', 'errores_lexicos', 'resumen'
+    """
+    # Paso 1: Leer archivo
+    lineas_codigo = leer_archivo_olympiac(ruta_archivo)
+    
+    # Paso 2 y 3: Enviar al explorador y recibir tokens
+    tokens, analizador_lexico = enviar_a_explorador(lineas_codigo)
+    
+    # Paso 4: Enviar tokens al analizador sintáctico
+    ast = enviar_a_analizador_sintactico(tokens)
+    
+    # Preparar resultado completo
+    resultado = {
+        'ast': ast,
+        'tokens': tokens,
+        'errores_lexicos': analizador_lexico.obtener_errores(),
+        'cantidad_errores': analizador_lexico.contador_errores_lexicos,
+        'resumen': analizador_lexico.obtener_resumen()
+    }
+    
+    return resultado
+
+
 def procesar_archivo(ruta_archivo):
     """
-    Lee un archivo Olympiac y retorna los tokens encontrados por el analizador.
+    Lee un archivo Olympiac y retorna los tokens encontrados por el explorador.
+    (Función legacy - mantiene compatibilidad)
     
     Entradas:
         ruta_archivo (str): Ruta al archivo .oly a procesar
@@ -60,12 +143,10 @@ def procesar_archivo(ruta_archivo):
     # Leer el archivo
     lineas_codigo = leer_archivo_olympiac(ruta_archivo)
     
-    # Crear analizador y procesar
-    analizador = AnalizadorLexico(lineas_codigo)
-    analizador.analizar_codigo_completo()
+    # Enviar al explorador y obtener tokens
+    tokens, _ = enviar_a_explorador(lineas_codigo)
     
-    # Retornar solo los tokens
-    return analizador.obtener_tokens()
+    return tokens
 
 
 def procesar_archivo_dict(ruta_archivo):
@@ -81,12 +162,11 @@ def procesar_archivo_dict(ruta_archivo):
     # Leer el archivo
     lineas_codigo = leer_archivo_olympiac(ruta_archivo)
     
-    # Crear analizador y procesar
-    analizador = AnalizadorLexico(lineas_codigo)
-    analizador.analizar_codigo_completo()
+    # Enviar al explorador
+    tokens, _ = enviar_a_explorador(lineas_codigo)
     
-    # Retornar tokens como diccionarios
-    return analizador.obtener_tokens_como_diccionarios()
+    # Convertir a diccionarios
+    return [token.to_dict() for token in tokens]
 
 
 def procesar_archivo_tuplas(ruta_archivo):
@@ -102,17 +182,16 @@ def procesar_archivo_tuplas(ruta_archivo):
     # Leer el archivo
     lineas_codigo = leer_archivo_olympiac(ruta_archivo)
     
-    # Crear analizador y procesar
-    analizador = AnalizadorLexico(lineas_codigo)
-    analizador.analizar_codigo_completo()
+    # Enviar al explorador
+    tokens, _ = enviar_a_explorador(lineas_codigo)
     
-    # Retornar tokens como tuplas
-    return analizador.obtener_tokens_como_tuplas()
+    # Convertir a tuplas
+    return [token.to_tuple() for token in tokens]
 
 
 def main():
     """
-    Función principal de demostración.
+    Función principal de demostración del flujo completo.
     """
     import sys
     
@@ -129,27 +208,59 @@ def main():
             print("Uso: python lector_olympiac.py archivo.oly")
             return
     
-    print("=" * 60)
-    print(f"PROCESANDO: {ruta}")
-    print("=" * 60)
+    print("=" * 80)
+    print(f"LECTOR OLYMPIAC - PROCESAMIENTO COMPLETO")
+    print("=" * 80)
+    print(f"Archivo: {ruta}\n")
     
     try:
-        # Procesar y obtener tokens
-        tokens = procesar_archivo(ruta)
+        # PASO 1: Leer archivo
+        print("[PASO 1] Leyendo archivo...")
+        lineas_codigo = leer_archivo_olympiac(ruta)
+        print(f"   ✓ {len(lineas_codigo)} líneas leídas\n")
         
-        # Mostrar tokens
-        print(f"\nTotal de tokens encontrados: {len(tokens)}\n")
-        for token in tokens:
-            print(token)
+        # PASO 2: Enviar al explorador (analizador léxico)
+        print("[PASO 2] Enviando código al explorador (analizador léxico)...")
+        tokens, analizador = enviar_a_explorador(lineas_codigo)
+        print(f"   ✓ {len(tokens)} tokens recibidos del explorador")
+        if analizador.contador_errores_lexicos > 0:
+            print(f"   ⚠ {analizador.contador_errores_lexicos} errores léxicos detectados")
+        print()
         
-        print("\n" + "=" * 60)
-        print("PROCESO COMPLETADO")
-        print("=" * 60)
+        # Mostrar algunos tokens
+        print("   Primeros tokens encontrados:")
+        for i, token in enumerate(tokens[:10]):
+            print(f"      {token}")
+        if len(tokens) > 10:
+            print(f"      ... y {len(tokens) - 10} tokens más")
+        print()
+        
+        # PASO 3: Enviar tokens al analizador sintáctico
+        print("[PASO 3] Enviando tokens al analizador sintáctico...")
+        ast = enviar_a_analizador_sintactico(tokens)
+        print(f"   ✓ AST generado exitosamente\n")
+        
+        # Mostrar AST
+        print("[RESULTADO] Árbol de Sintaxis Abstracta (AST):")
+        print("-" * 80)
+        for linea in ast.preorder_lines():
+            print(linea)
+        
+        print("\n" + "=" * 80)
+        print("PROCESAMIENTO COMPLETADO EXITOSAMENTE")
+        print("=" * 80)
+        print(f"Líneas procesadas: {len(lineas_codigo)}")
+        print(f"Tokens generados: {len(tokens)}")
+        print(f"Errores léxicos: {analizador.contador_errores_lexicos}")
+        print(f"AST nodos raíz: {ast.tipo}")
+        print("=" * 80)
         
     except FileNotFoundError as e:
-        print(f"ERROR: {e}")
+        print(f"\n❌ ERROR: {e}")
     except Exception as e:
-        print(f"ERROR: {e}")
+        print(f"\n❌ ERROR: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 if __name__ == "__main__":
