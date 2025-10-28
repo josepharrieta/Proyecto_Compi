@@ -1,0 +1,15 @@
+; Programa de gestion deportiva basico
+Deportista atleta1 25 80 75 Futbol Argentina
+Deportista atleta2 28 85 78 Basquet Brasil
+Lista Deportista competidores
+
+si Comparar(atleta1, atleta2) > 0 entonces {
+    narrar(atleta1)
+} sino {
+    narrar(atleta2)
+} endif
+
+Repetir(3) [
+    input(entrenamiento)
+    narrar(progreso)
+] FinRep
