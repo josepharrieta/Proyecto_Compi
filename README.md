@@ -9,7 +9,7 @@ Este proyecto implementa un analizador completo para archivos `.oly` (Olympiac) 
 - **Analizador Sintáctico (Parser)**: Construye el Árbol de Sintaxis Abstracta (AST)
 - **Lector**: Coordina el flujo completo de análisis
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ```
 ┌─────────────┐
@@ -39,7 +39,7 @@ Este proyecto implementa un analizador completo para archivos `.oly` (Olympiac) 
 └─────────────┘
 ```
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Proyecto_Compi/
@@ -54,7 +54,7 @@ Proyecto_Compi/
 └── README.md                    # Este archivo
 ```
 
-## 🚀 Uso
+## Uso
 
 ### Método 1: Flujo Completo Automático
 
@@ -114,7 +114,7 @@ python test_explorador.py
 python -m pytest test_analizador_sintactico.py
 ```
 
-## 📝 Ejemplo de Código Olympiac
+## Ejemplo de Código Olympiac
 
 ```olympiac
 ; Programa de gestion deportiva basico
@@ -134,7 +134,7 @@ Repetir(3) [
 ] FinRep
 ```
 
-## 🔍 Componentes del Lenguaje
+## Componentes del Lenguaje
 
 ### Tipos de Tokens Reconocidos
 
@@ -157,7 +157,7 @@ Repetir(3) [
 - **Bucles**: `Repetir(n) [ ... ] FinRep`
 - **Bucles Condicionales**: `RepetirHasta(condicion) [ ... ] FinRepHast`
 
-## 👥 Autores
+## Autores
 
 - Kevin Núñez
 - Axel López
@@ -165,11 +165,11 @@ Repetir(3) [
 - Joseph Arrieta
 - Arturo Chavarría
 
-## 📅 Versión
+## Versión
 
 - **Fecha**: Octubre 2025
 - **Versión**: 2.0
 
-## 📄 Licencia
+## Licencia
 
 Proyecto académico - Universidad [Nombre Universidad]
