@@ -155,8 +155,6 @@ class AnalizadorLexico:
         contador_errores_lexicos (int): Número de errores léxicos encontrados
     """
     
-    # Patrones de expresiones regulares para cada tipo de token
-    # Ordenados por prioridad de coincidencia (más específicos primero)
     patrones_reconocimiento = [
         (TipoToken.COMENTARIO, r'^;.*', "Comentario de línea completa"),
         (TipoToken.DECLARACION_ENTIDAD, r'^(Deportista|Lista)', "Declaración de entidad del dominio"),
@@ -171,7 +169,7 @@ class AnalizadorLexico:
         (TipoToken.OPERADOR_ARITMETICO, r'^(\+|-|\*|/|%)', "Operador aritmético básico"),
         (TipoToken.NUMERO_ENTERO, r'^([0-9]+)', "Número entero positivo"),
         (TipoToken.VALOR_BOOLEANO, r'^(True|False)', "Valor lógico booleano"),
-        (TipoToken.NOMBRE_IDENTIFICADOR, r'^([a-zA-Z_][a-zA-Z0-9_]*)', "Identificador válido"),
+        (TipoToken.NOMBRE_IDENTIFICADOR, r'^([A-Za-zñáéíóúüÑÁÉÍÓÚÜ_][A-Za-z0-9ñáéíóúüÑÁÉÍÓÚÜ_]*)', "Identificador válido"),
         (TipoToken.SIMBOLO_PUNTUACION, r'^([(),;:{}\[\]\.-])', "Símbolo de puntuación o delimitador"),
         (TipoToken.ESPACIOS_BLANCOS, r'^(\s)+', "Espacios en blanco y caracteres de formato")
     ]
@@ -200,7 +198,7 @@ class AnalizadorLexico:
         """
         self.tokens_encontrados.clear()
         self.contador_errores_lexicos = 0
-        self.errores_detallados.clear()
+        self.errores_detalladas.clear()
         
         for numero_linea, linea_codigo in enumerate(self.codigo_fuente_lineas, 1):
             tokens_linea = self._procesar_linea_individual(linea_codigo, numero_linea)
@@ -257,7 +255,7 @@ class AnalizadorLexico:
         Salida:
             list: Lista de diccionarios con información de cada error
         """
-        return self.errores_detallados.copy()
+        return self.errores_detalladas.copy()
 
     def obtener_resumen(self):
         """
@@ -347,7 +345,7 @@ class AnalizadorLexico:
                         'columna': posicion_actual + 1,
                         'mensaje': f"ERROR LEXICO: {tipo_error} {caracter_mostrable} en linea {numero_linea}, columna {posicion_actual + 1}"
                     }
-                    self.errores_detallados.append(error_info)
+                    self.errores_detalladas.append(error_info)
                     
                 except Exception as e:
                     error_info = {
@@ -357,7 +355,7 @@ class AnalizadorLexico:
                         'columna': posicion_actual + 1,
                         'mensaje': f"ERROR LEXICO: caracter problematico (ord={ord(caracter_problematico)}) en linea {numero_linea}, columna {posicion_actual + 1}"
                     }
-                    self.errores_detallados.append(error_info)
+                    self.errores_detalladas.append(error_info)
                 
                 self.contador_errores_lexicos += 1
                 posicion_actual += 1
