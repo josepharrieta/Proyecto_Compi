@@ -2,7 +2,7 @@
 
 Sistema de análisis léxico y sintáctico para el lenguaje de dominio específico **Olympiac**, orientado a la gestión de deportistas y competencias deportivas.
 
-## 📋 Descripción
+## Descripción
 
 Este proyecto implementa un analizador completo para archivos `.oly` (Olympiac) que incluye:
 - **Analizador Léxico (Explorador)**: Tokeniza el código fuente
