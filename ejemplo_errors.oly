@@ -1,0 +1,41 @@
+; Ejemplo con errores para pruebas del analizador
+; ------------------------------------------------
+; 1) Declaración incompleta (falta identificador)
+Deportista
+
+; 2) Declaración correcta (referencia de control)
+Deportista atleta1 5 10 15 Futbol CostaRica
+
+; 3) Lista mal escrita (typo en la palabra clave)
+Listaa Deportista atletas_lista
+
+; 4) Invocación con paréntesis sin cerrar
+narrar("Inicio del test"
+
+; 5) Condicional con operador inválido y sin 'entonces'
+si atleta1.puntos >> 10 {
+    narrar("Puntos altos")
+} sino {
+    narrar("Puntos bajos")
+}
+
+; 6) Repetir con número mal formado (lexical)
+Repetir 3a {
+    narrar("Dentro repetir")
+}
+
+; 7) Símbolo inválido que el lexer debe marcar
+@invalido 100
+
+; 8) RepetirHasta sin condición válida
+RepetirHasta {
+    narrar("hasta?")
+}
+
+; 9) Invocación genérica sin cierre de paréntesis
+Comparar(atleta1, atleta2
+
+; 10) Llave abierta sin cerrar
+{
+    narrar("bloque abierto")
+; fin del archivo con errores

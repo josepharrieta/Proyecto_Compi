@@ -7,7 +7,7 @@ Este módulo coordina el flujo completo de análisis de archivos Olympiac:
 2. Envía el contenido al explorador (analizador léxico)
 3. Recibe los tokens del explorador
 4. Envía los tokens al analizador sintáctico
-5. Retorna el AST generado
+5. Retorna el asa generado
 
 Autores: [Kevin Núñez, Axel López, Felipe Murillo, Joseph Arrieta, Arturo Chavarría]
 Fecha: Octubre 2025
@@ -77,18 +77,18 @@ def enviar_a_explorador(lineas_codigo):
 
 def enviar_a_analizador_sintactico(tokens):
     """
-    Envía los tokens al analizador sintáctico para construir el AST.
+    Envía los tokens al analizador sintáctico para construir el ASA.
     
     Entradas:
         tokens (list): Lista de tokens léxicos
         
     Salida:
-        ASTNode: Árbol de sintaxis abstracta (AST) generado
+        asaNode: Árbol de sintaxis abstracta (ASA) generado
     """
-    # Parsear tokens y construir AST
-    ast = parse_from_tokens(tokens)
+    # Parsear tokens y construir ASA
+    asa = parse_from_tokens(tokens)
     
-    return ast
+    return asa
 
 
 def procesar_archivo_completo(ruta_archivo):
@@ -100,13 +100,13 @@ def procesar_archivo_completo(ruta_archivo):
     2. Envía líneas al explorador
     3. Recibe tokens del explorador
     4. Envía tokens al analizador sintáctico
-    5. Retorna el AST
+    5. Retorna el asa
     
     Entradas:
         ruta_archivo (str): Ruta al archivo .oly a procesar
         
     Salida:
-        dict: Diccionario con 'ast', 'tokens', 'errores_lexicos', 'resumen'
+        dict: Diccionario con 'asa', 'tokens', 'errores_lexicos', 'resumen'
     """
     # Paso 1: Leer archivo
     lineas_codigo = leer_archivo_olympiac(ruta_archivo)
@@ -115,11 +115,11 @@ def procesar_archivo_completo(ruta_archivo):
     tokens, analizador_lexico = enviar_a_explorador(lineas_codigo)
     
     # Paso 4: Enviar tokens al analizador sintáctico
-    ast = enviar_a_analizador_sintactico(tokens)
+    asa = enviar_a_analizador_sintactico(tokens)
     
     # Preparar resultado completo
     resultado = {
-        'ast': ast,
+        'asa': asa,
         'tokens': tokens,
         'errores_lexicos': analizador_lexico.obtener_errores(),
         'cantidad_errores': analizador_lexico.contador_errores_lexicos,
@@ -237,13 +237,13 @@ def main():
         
         # PASO 3: Enviar tokens al analizador sintáctico
         print("[PASO 3] Enviando tokens al analizador sintáctico...")
-        ast = enviar_a_analizador_sintactico(tokens)
-        print(f"   ✓ AST generado exitosamente\n")
+        asa = enviar_a_analizador_sintactico(tokens)
+        print(f"   ✓ asa generado exitosamente\n")
         
-        # Mostrar AST
-        print("[RESULTADO] Árbol de Sintaxis Abstracta (AST):")
+        # Mostrar asa
+        print("[RESULTADO] Árbol de Sintaxis Abstracta (asa):")
         print("-" * 80)
-        for linea in ast.preorder_lines():
+        for linea in asa.preorder_lines():
             print(linea)
         
         print("\n" + "=" * 80)
@@ -252,13 +252,13 @@ def main():
         print(f"Líneas procesadas: {len(lineas_codigo)}")
         print(f"Tokens generados: {len(tokens)}")
         print(f"Errores léxicos: {analizador.contador_errores_lexicos}")
-        print(f"AST nodos raíz: {ast.tipo}")
+        print(f"asa nodos raíz: {asa.tipo}")
         print("=" * 80)
         
     except FileNotFoundError as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\n ERROR: {e}")
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\n ERROR: {e}")
         import traceback
         traceback.print_exc()
 

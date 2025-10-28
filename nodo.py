@@ -1,19 +1,19 @@
 """
-Nodo AST y utilidades para impresión en preorden.
+Nodo asa y utilidades para impresión en preorden.
 Formato de salida por línea:
 <"Tipo", "Contenido", "Atributos">
 """
 from typing import List, Dict, Any, Iterator
 
 
-class ASTNode:
-    def __init__(self, tipo: str, contenido: str = "", atributos: Dict[str, Any] = None, hijos: List['ASTNode'] = None):
+class asaNode:
+    def __init__(self, tipo: str, contenido: str = "", atributos: Dict[str, Any] = None, hijos: List['asaNode'] = None):
         self.tipo = tipo
         self.contenido = contenido or ""
         self.atributos = atributos or {}
         self.hijos = hijos or []
 
-    def agregar_hijo(self, nodo: 'ASTNode'):
+    def agregar_hijo(self, nodo: 'asaNode'):
         self.hijos.append(nodo)
 
     def preorder_lines(self, nivel: int = 0) -> Iterator[str]:

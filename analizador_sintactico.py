@@ -1,16 +1,16 @@
 """
 Analizador sintáctico por descenso recursivo para Olympiac.
-Consume tokens producidos por explorador.AnalizadorLexico y construye un AST usando nodo.ASTNode.
+Consume tokens producidos por explorador.AnalizadorLexico y construye un asa usando nodo.asaNode.
 
 Uso:
     from analizador_sintactico import parse_from_file
-    ast = parse_from_file("ejemplo1.oly")
-    for linea in ast.preorder_lines():
+    asa = parse_from_file("ejemplo1.oly")
+    for linea in asa.preorder_lines():
         print(linea)
 """
 from typing import List, Optional
 from explorador import AnalizadorLexico, TokenLexico, TipoToken
-from nodo import ASTNode
+from nodo import asaNode
 
 
 class ParserError(Exception):
@@ -47,8 +47,8 @@ class Parser:
         return bool(t and t.texto_original.lower() == texto.lower())
 
     # entrada principal
-    def parse_program(self) -> ASTNode:
-        raiz = ASTNode("Programa", "root")
+    def parse_program(self) -> asaNode:
+        raiz = asaNode("Programa", "root")
         while self.peek():
             nodo = self.parse_comando()
             if nodo:
@@ -57,15 +57,15 @@ class Parser:
                 break
         return raiz
 
-    # Comando ::= Declarar | Condicional | Repetir | RepetirHasta | Narrar | Bloque | Dirigir | Comentario
-    def parse_comando(self) -> Optional[ASTNode]:
+    # Comando ::= Declarar | Condicional | Repetir | RepetirHasaa | Narrar | Bloque | Dirigir | Comentario
+    def parse_comando(self) -> Optional[asaNode]:
         t = self.peek()
         if not t:
             return None
 
         if t.tipo_token == TipoToken.COMENTARIO:
             tok = self.advance()
-            return ASTNode("Comentario", tok.texto_original, {"linea": tok.numero_linea})
+            return asaNode("Comentario", tok.texto_original, {"linea": tok.numero_linea})
 
         if t.tipo_token == TipoToken.DECLARACION_ENTIDAD:
             if t.texto_original.lower() == "deportista":
@@ -74,7 +74,7 @@ class Parser:
                 return self.parse_lista_o_carga()
             # fallback
             tok = self.advance()
-            return ASTNode("Declaracion", tok.texto_original, {"linea": tok.numero_linea})
+            return asaNode("Declaracion", tok.texto_original, {"linea": tok.numero_linea})
 
         if t.tipo_token == TipoToken.ESTRUCTURA_CONTROL_FLUJO:
             txt = t.texto_original.lower()
@@ -82,12 +82,12 @@ class Parser:
                 return self.parse_condicional()
             if txt == "repetir":
                 return self.parse_repetir()
-            if txt == "repetirhasta":
-                return self.parse_repetir_hasta()
+            if txt == "repetirhasaa":
+                return self.parse_repetir_hasaa()
             # cierres sueltos
-            if txt in ("finrep", "finrephast", "endif"):
+            if txt in ("finrep", "finrephasa", "endif"):
                 tok = self.advance()
-                return ASTNode("Cierre", tok.texto_original, {"linea": tok.numero_linea})
+                return asaNode("Cierre", tok.texto_original, {"linea": tok.numero_linea})
 
         if t.tipo_token == TipoToken.INVOCACION_FUNCION:
             txt = t.texto_original.lower()
@@ -100,18 +100,18 @@ class Parser:
 
         if t.tipo_token == TipoToken.NOMBRE_IDENTIFICADOR:
             tok = self.advance()
-            return ASTNode("Identificador", tok.texto_original, {"linea": tok.numero_linea})
+            return asaNode("Identificador", tok.texto_original, {"linea": tok.numero_linea})
 
         if t.tipo_token == TipoToken.SIMBOLO_PUNTUACION:
             tok = self.advance()
-            return ASTNode("Simbolo", tok.texto_original, {"linea": tok.numero_linea})
+            return asaNode("Simbolo", tok.texto_original, {"linea": tok.numero_linea})
 
         # fallback
         tok = self.advance()
-        return ASTNode("Unknown", tok.texto_original, {"linea": tok.numero_linea})
+        return asaNode("Unknown", tok.texto_original, {"linea": tok.numero_linea})
 
     # Declaraciones
-    def parse_deportista(self) -> ASTNode:
+    def parse_deportista(self) -> asaNode:
         tok_decl = self.expect(TipoToken.DECLARACION_ENTIDAD, texto="Deportista")
         nombre = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
         est = []
@@ -121,9 +121,9 @@ class Parser:
         deporte = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
         pais = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
         atributos = {"nombre": nombre.texto_original, "estadisticas": est, "deporte": deporte.texto_original, "pais": pais.texto_original, "linea": tok_decl.numero_linea}
-        return ASTNode("Deportista", nombre.texto_original, atributos)
+        return asaNode("Deportista", nombre.texto_original, atributos)
 
-    def parse_lista_o_carga(self) -> ASTNode:
+    def parse_lista_o_carga(self) -> asaNode:
         tok = self.expect(TipoToken.DECLARACION_ENTIDAD, texto="Lista")
         siguiente = self.peek()
         if siguiente and siguiente.tipo_token == TipoToken.DECLARACION_ENTIDAD and siguiente.texto_original.lower() == "deportista":
@@ -144,7 +144,7 @@ class Parser:
                         break
                 else:
                     break
-            return ASTNode("CargaDeportistas", "Lista Deportista", {"deportistas": deportistas, "linea": tok.numero_linea})
+            return asaNode("CargaDeportistas", "Lista Deportista", {"deportistas": deportistas, "linea": tok.numero_linea})
         else:
             tipo = None
             if self.peek() and self.peek().tipo_token in (TipoToken.NOMBRE_IDENTIFICADOR, TipoToken.DECLARACION_ENTIDAD):
@@ -153,22 +153,22 @@ class Parser:
             if self.peek() and self.peek().tipo_token == TipoToken.NOMBRE_IDENTIFICADOR:
                 nombre = self.advance()
             atributos = {"tipo": tipo.texto_original if tipo else None, "nombre": nombre.texto_original if nombre else None, "linea": tok.numero_linea}
-            return ASTNode("Lista", atributos.get("nombre", ""), atributos)
+            return asaNode("Lista", atributos.get("nombre", ""), atributos)
 
     # Invocaciones y funciones
-    def parse_narrar(self) -> ASTNode:
+    def parse_narrar(self) -> asaNode:
         tok = self.expect(TipoToken.INVOCACION_FUNCION)
         args = []
-        # leer hasta ')'
+        # leer hasaa ')'
         while (p := self.peek()) and p.texto_original != ")":
             if p.tipo_token == TipoToken.SIMBOLO_PUNTUACION and p.texto_original == ",":
                 self.advance(); continue
             args.append(self.advance().texto_original)
         if self.peek() and self.peek().texto_original == ")":
             self.advance()
-        return ASTNode("Narrar", tok.texto_original, {"args": args, "linea": tok.numero_linea})
+        return asaNode("Narrar", tok.texto_original, {"args": args, "linea": tok.numero_linea})
 
-    def parse_dirigir(self) -> ASTNode:
+    def parse_dirigir(self) -> asaNode:
         tok = self.expect(TipoToken.INVOCACION_FUNCION)  # input(
         args = []
         while (p := self.peek()) and p.texto_original != ")":
@@ -177,9 +177,9 @@ class Parser:
             args.append(self.advance().texto_original)
         if self.peek() and self.peek().texto_original == ")":
             self.advance()
-        return ASTNode("Dirigir", tok.texto_original, {"args": args, "linea": tok.numero_linea})
+        return asaNode("Dirigir", tok.texto_original, {"args": args, "linea": tok.numero_linea})
 
-    def parse_invocacion_generica(self) -> ASTNode:
+    def parse_invocacion_generica(self) -> asaNode:
         tok = self.expect(TipoToken.INVOCACION_FUNCION)
         nombre = tok.texto_original
         args = []
@@ -189,10 +189,10 @@ class Parser:
             args.append(self.advance().texto_original)
         if self.peek() and self.peek().texto_original == ")":
             self.advance()
-        return ASTNode("Invocacion", nombre, {"args": args, "linea": tok.numero_linea})
+        return asaNode("Invocacion", nombre, {"args": args, "linea": tok.numero_linea})
 
     # Condicional
-    def parse_condicional(self) -> ASTNode:
+    def parse_condicional(self) -> asaNode:
         si_tok = self.expect(TipoToken.ESTRUCTURA_CONTROL_FLUJO, texto="si")
         condicion = self.parse_condicion_expresion()
         if self.peek() and self.peek().texto_original.lower() == "entonces":
@@ -222,23 +222,23 @@ class Parser:
             self.advance()
         if self.peek() and self.peek().texto_original.lower() == "endif":
             self.advance()
-        nodo = ASTNode("Condicional", "si", {"condicion": condicion.contenido, "linea": si_tok.numero_linea})
+        nodo = asaNode("Condicional", "si", {"condicion": condicion.contenido, "linea": si_tok.numero_linea})
         nodo.hijos = cuerpo
         if sino_bloque:
-            nodo.agregar_hijo(ASTNode("Sino", "", {}, sino_bloque))
+            nodo.agregar_hijo(asaNode("Sino", "", {}, sino_bloque))
         return nodo
 
-    def parse_condicion_expresion(self) -> ASTNode:
+    def parse_condicion_expresion(self) -> asaNode:
         left = self.parse_expression()
         if (p := self.peek()) and p.tipo_token == TipoToken.OPERADOR_COMPARACION:
             op = self.advance()
             right = self.parse_expression()
-            node = ASTNode("Condicion", f"{left.contenido} {op.texto_original} {right.contenido}", {}, [left, ASTNode("Op", op.texto_original), right])
+            node = asaNode("Condicion", f"{left.contenido} {op.texto_original} {right.contenido}", {}, [left, asaNode("Op", op.texto_original), right])
             return node
         return left
 
-    # Repetir y RepetirHasta
-    def parse_repetir(self) -> ASTNode:
+    # Repetir y RepetirHasaa
+    def parse_repetir(self) -> asaNode:
         tok = self.expect(TipoToken.ESTRUCTURA_CONTROL_FLUJO, texto="Repetir")
         # aceptar '(' opcional (lex puede haber incluido en INVOCACION_FUNCION o SIMBOLO)
         if self.peek() and self.peek().texto_original == "(":
@@ -259,10 +259,10 @@ class Parser:
             self.advance()
         if self.peek() and self.peek().texto_original.lower() == "finrep":
             self.advance()
-        return ASTNode("Repetir", count.contenido, {}, cuerpo)
+        return asaNode("Repetir", count.contenido, {}, cuerpo)
 
-    def parse_repetir_hasta(self) -> ASTNode:
-        tok = self.expect(TipoToken.ESTRUCTURA_CONTROL_FLUJO, texto="RepetirHasta")
+    def parse_repetir_hasaa(self) -> asaNode:
+        tok = self.expect(TipoToken.ESTRUCTURA_CONTROL_FLUJO, texto="RepetirHasaa")
         if self.peek() and self.peek().texto_original == "(":
             self.advance()
         condicion = self.parse_condicion_expresion()
@@ -271,7 +271,7 @@ class Parser:
         if self.peek() and self.peek().texto_original == "[":
             self.advance()
         cuerpo = []
-        while (p := self.peek()) and p.texto_original.lower() not in ("finrephast", "]"):
+        while (p := self.peek()) and p.texto_original.lower() not in ("finrephasa", "]"):
             n = self.parse_comando()
             if n:
                 cuerpo.append(n)
@@ -279,55 +279,55 @@ class Parser:
                 break
         if self.peek() and self.peek().texto_original == "]":
             self.advance()
-        if self.peek() and self.peek().texto_original.lower() == "finrephast":
+        if self.peek() and self.peek().texto_original.lower() == "finrephasa":
             self.advance()
-        return ASTNode("RepetirHasta", condicion.contenido, {}, cuerpo)
+        return asaNode("RepetirHasaa", condicion.contenido, {}, cuerpo)
 
     # Expresiones (precedencia)
-    def parse_expression(self) -> ASTNode:
+    def parse_expression(self) -> asaNode:
         return self.parse_comparison()
 
-    def parse_comparison(self) -> ASTNode:
+    def parse_comparison(self) -> asaNode:
         node = self.parse_add()
         while (p := self.peek()) and p.tipo_token == TipoToken.OPERADOR_COMPARACION:
             op = self.advance()
             right = self.parse_add()
-            node = ASTNode("BinaryOp", op.texto_original, {}, [node, right])
+            node = asaNode("BinaryOp", op.texto_original, {}, [node, right])
         return node
 
-    def parse_add(self) -> ASTNode:
+    def parse_add(self) -> asaNode:
         node = self.parse_mul()
         while (p := self.peek()) and p.tipo_token == TipoToken.OPERADOR_ARITMETICO and p.texto_original in ("+", "-"):
             op = self.advance()
             right = self.parse_mul()
-            node = ASTNode("BinaryOp", op.texto_original, {}, [node, right])
+            node = asaNode("BinaryOp", op.texto_original, {}, [node, right])
         return node
 
-    def parse_mul(self) -> ASTNode:
+    def parse_mul(self) -> asaNode:
         node = self.parse_unary()
         while (p := self.peek()) and p.tipo_token == TipoToken.OPERADOR_ARITMETICO and p.texto_original in ("*", "/", "%"):
             op = self.advance()
             right = self.parse_unary()
-            node = ASTNode("BinaryOp", op.texto_original, {}, [node, right])
+            node = asaNode("BinaryOp", op.texto_original, {}, [node, right])
         return node
 
-    def parse_unary(self) -> ASTNode:
+    def parse_unary(self) -> asaNode:
         if (p := self.peek()) and p.tipo_token == TipoToken.OPERADOR_ARITMETICO and p.texto_original in ("+", "-"):
             op = self.advance()
             node = self.parse_unary()
-            return ASTNode("UnaryOp", op.texto_original, {}, [node])
+            return asaNode("UnaryOp", op.texto_original, {}, [node])
         return self.parse_primary()
 
-    def parse_primary(self) -> ASTNode:
+    def parse_primary(self) -> asaNode:
         p = self.peek()
         if not p:
             raise ParserError("Expresión incompleta: EOF")
         if p.tipo_token == TipoToken.NUMERO_ENTERO:
             n = self.advance()
-            return ASTNode("Numero", n.texto_original, {"linea": n.numero_linea})
+            return asaNode("Numero", n.texto_original, {"linea": n.numero_linea})
         if p.tipo_token == TipoToken.NOMBRE_IDENTIFICADOR:
             v = self.advance()
-            return ASTNode("Nombre", v.texto_original, {"linea": v.numero_linea})
+            return asaNode("Nombre", v.texto_original, {"linea": v.numero_linea})
         if p.tipo_token == TipoToken.INVOCACION_FUNCION:
             inv = self.parse_invocacion_generica()
             return inv
@@ -339,15 +339,15 @@ class Parser:
             return node
         # fallback
         tok = self.advance()
-        return ASTNode("PrimaryUnknown", tok.texto_original, {"linea": tok.numero_linea})
+        return asaNode("PrimaryUnknown", tok.texto_original, {"linea": tok.numero_linea})
 
 # Integración con explorador
-def parse_from_tokens(tokens: List[TokenLexico]) -> ASTNode:
+def parse_from_tokens(tokens: List[TokenLexico]) -> asaNode:
     parser = Parser(tokens)
     return parser.parse_program()
 
 
-def parse_from_file(path: str) -> ASTNode:
+def parse_from_file(path: str) -> asaNode:
     with open(path, encoding="utf-8") as f:
         lineas = [l.rstrip("\n\r") for l in f.readlines()]
     lex = AnalizadorLexico(lineas)
@@ -361,6 +361,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Uso: python analizador_sintactico.py archivo.oly")
     else:
-        ast = parse_from_file(sys.argv[1])
-        for linea in ast.preorder_lines():
+        asa = parse_from_file(sys.argv[1])
+        for linea in asa.preorder_lines():
             print(linea)
