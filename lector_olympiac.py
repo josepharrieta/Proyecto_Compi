@@ -21,6 +21,10 @@ Dependencias:
 import os
 from explorador import AnalizadorLexico
 from analizador_sintactico import parse_from_tokens
+try:
+    from verificador import Verifier
+except Exception:
+    Verifier = None
 
 
 def leer_archivo_olympiac(ruta_archivo):
@@ -116,14 +120,34 @@ def procesar_archivo_completo(ruta_archivo):
     
     # Paso 4: Enviar tokens al analizador sintáctico
     asa = enviar_a_analizador_sintactico(tokens)
-    
+    # ejecutar verificador (si está disponible)
+    sem_result = None
+    if Verifier:
+        try:
+            verifier = Verifier(asa)
+            errores_sem = verifier.run()
+            # captura una versión impresa del asa decorado (simple)
+            import io
+            buf = io.StringIO()
+            # imprimir decorado a buffer
+            # reusar método print_decorated but redirect stdout
+            verifier.print_decorated()
+            sem_result = {
+                'errores': [ { 'mensaje': e.message, 'linea': e.line, 'col': e.column } for e in errores_sem ],
+                'tabla_snapshot': verifier.table.snapshot(),
+                'decorations_json': os.path.join(os.getcwd(), 'asa_decorated.json')
+            }
+        except Exception:
+            sem_result = { 'errores': [ {'mensaje': 'Error interno en verificador'} ], 'tabla_snapshot': {} }
+
     # Preparar resultado completo
     resultado = {
         'asa': asa,
         'tokens': tokens,
         'errores_lexicos': analizador_lexico.obtener_errores(),
         'cantidad_errores': analizador_lexico.contador_errores_lexicos,
-        'resumen': analizador_lexico.obtener_resumen()
+        'resumen': analizador_lexico.obtener_resumen(),
+        'semantica': sem_result
     }
     
     return resultado
@@ -245,6 +269,21 @@ def main():
         print("-" * 80)
         for linea in asa.preorder_lines():
             print(linea)
+
+        # PASO 4: Ejecutar verificador semántico (si está disponible)
+        if Verifier:
+            try:
+                print('\n[SEMANTICA] Ejecutando verificador semántico...')
+                verifier = Verifier(asa)
+                errores_sem = verifier.run()
+                verifier.print_decorated()
+                if errores_sem:
+                    print(f"\n\n[SEMANTICA] Se detectaron {len(errores_sem)} errores semánticos.")
+                else:
+                    print("\n\n[SEMANTICA] Sin errores semánticos detectados.")
+                print(f"Decorations exported to: {os.path.join(os.getcwd(), 'asa_decorated.json')}")
+            except Exception as ex:
+                print(f"[SEMANTICA] Error al ejecutar el verificador: {ex}")
         
         print("\n" + "=" * 80)
         print("PROCESAMIENTO COMPLETADO EXITOSAMENTE")

@@ -160,7 +160,8 @@ class AnalizadorLexico:
         (TipoToken.DECLARACION_ENTIDAD, r'^(Deportista|Lista)', "Declaración de entidad del dominio"),
         (TipoToken.TIPO_DATO_DOMINIO, r'^(Pais|Deporte|Resultado)', "Tipo de dato específico del dominio"),
         (TipoToken.ESTRUCTURA_CONTROL_FLUJO, r'^(si|entonces|sino|endif|Repetir|RepetirHasta|FinRep|FinRepHast)', "Estructura de control de flujo"),
-        (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
+    (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
+    (TipoToken.LITERAL_CADENA, r'^("[^"]*"|\'[^\']*\')', "Cadenas literales entre comillas"),
         (TipoToken.PALABRA_CLAVE, r'^(preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|finact|ceremonia_medallas|competencia_oficial|partido_clasificatorio)', "Palabras clave del dominio"),
         (TipoToken.RESULTADO_ADICIONAL, r'^(listaRes)', "Token específico para listas de resultados"),
         (TipoToken.CONDICION_EMPATE, r'^(empate)', "Token específico para condiciones de empate"),
@@ -169,7 +170,7 @@ class AnalizadorLexico:
         (TipoToken.OPERADOR_ARITMETICO, r'^(\+|-|\*|/|%)', "Operador aritmético básico"),
         (TipoToken.NUMERO_ENTERO, r'^([0-9]+)', "Número entero positivo"),
         (TipoToken.VALOR_BOOLEANO, r'^(True|False)', "Valor lógico booleano"),
-        (TipoToken.NOMBRE_IDENTIFICADOR, r'^([A-Za-zñáéíóúüÑÁÉÍÓÚÜ_][A-Za-z0-9ñáéíóúüÑÁÉÍÓÚÜ_]*)', "Identificador válido"),
+    (TipoToken.NOMBRE_IDENTIFICADOR, r'^([A-Za-zñáéíóúüÑÁÉÍÓÚÜ_][A-Za-z0-9ñáéíóúüÑÁÉÍÓÚÜ_]*)', "Identificador válido"),
         (TipoToken.SIMBOLO_PUNTUACION, r'^([(),;:{}\[\]\.-])', "Símbolo de puntuación o delimitador"),
         (TipoToken.ESPACIOS_BLANCOS, r'^(\s)+', "Espacios en blanco y caracteres de formato")
     ]
@@ -198,7 +199,7 @@ class AnalizadorLexico:
         """
         self.tokens_encontrados.clear()
         self.contador_errores_lexicos = 0
-        self.errores_detalladas.clear()
+        self.errores_detallados.clear()
         
         for numero_linea, linea_codigo in enumerate(self.codigo_fuente_lineas, 1):
             tokens_linea = self._procesar_linea_individual(linea_codigo, numero_linea)
@@ -255,7 +256,7 @@ class AnalizadorLexico:
         Salida:
             list: Lista de diccionarios con información de cada error
         """
-        return self.errores_detalladas.copy()
+        return self.errores_detallados.copy()
 
     def obtener_resumen(self):
         """
@@ -345,7 +346,7 @@ class AnalizadorLexico:
                         'columna': posicion_actual + 1,
                         'mensaje': f"ERROR LEXICO: {tipo_error} {caracter_mostrable} en linea {numero_linea}, columna {posicion_actual + 1}"
                     }
-                    self.errores_detalladas.append(error_info)
+                    self.errores_detallados.append(error_info)
                     
                 except Exception as e:
                     error_info = {
@@ -355,7 +356,7 @@ class AnalizadorLexico:
                         'columna': posicion_actual + 1,
                         'mensaje': f"ERROR LEXICO: caracter problematico (ord={ord(caracter_problematico)}) en linea {numero_linea}, columna {posicion_actual + 1}"
                     }
-                    self.errores_detalladas.append(error_info)
+                    self.errores_detallados.append(error_info)
                 
                 self.contador_errores_lexicos += 1
                 posicion_actual += 1

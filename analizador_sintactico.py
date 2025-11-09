@@ -130,6 +130,23 @@ class Parser:
             # Carga: Lista Deportista deportista+ (heurística)
             self.advance()
             deportistas = []
+            # If the next token is an identifier but not followed by 3 numbers,
+            # treat it as a named list declaration: 'Lista Deportista List_est_dep'
+            p = self.peek()
+            if p and p.tipo_token == TipoToken.NOMBRE_IDENTIFICADOR:
+                # lookahead to see if a full deportista entry follows (name + 3 numbers)
+                lookahead_ok = True
+                for i in range(3):
+                    la_pos = self.pos + i
+                    if la_pos >= len(self.tokens) or self.tokens[la_pos].tipo_token != TipoToken.NUMERO_ENTERO:
+                        lookahead_ok = False
+                        break
+                if not lookahead_ok:
+                    # treat as named list declaration
+                    nombre = self.advance()
+                    atributos = {"tipo": "Deportista", "nombre": nombre.texto_original, "linea": tok.numero_linea}
+                    return asaNode("Lista", atributos.get("nombre", ""), atributos)
+
             # intentar parsear bloques tipo: Nombre 3nums Deporte Pais repetidos
             while True:
                 p = self.peek()

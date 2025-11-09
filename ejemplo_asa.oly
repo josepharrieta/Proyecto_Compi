@@ -12,19 +12,19 @@ Lista Deportista List_est_dep
 
 ; -- Torneo: partido 1 --
 ; Encuentro: Francia vs Inglaterra (representado como string para evitar token desconocido)
-narrar(Encuentro: Francia vs Inglaterra)
+narrar("Encuentro: Francia vs Inglaterra")
 ; Duelo entre jugadores
-narrar(Duelo: Mbappe contra Jude)
+narrar("Duelo: Mbappe contra Jude")
 ; Agregar resultado de comparacion a la lista de deportistas
 List_est_dep.agregar(Comparar(Mbappe, Jude))
 ; Mostrar resultado (se usa narrar para evitar tokens problematicos con guiones/numeros)
-narrar(Resultado: 1 - 0)
+narrar("Resultado: 1 - 0")
 
 ; -- Torneo: partido 2 --
-narrar(Encuentro: Alemania vs Brazil)
-narrar(Duelo: Musiala contra Kaka)
+narrar("Encuentro: Alemania vs Brazil")
+narrar("Duelo: Musiala contra Kaka")
 List_est_dep.agregar(Comparar(Musiala, Kaka))
-narrar(Resultado: 7 - 0)
+narrar("Resultado: 7 - 0")
 
 ; Decisiones basadas en comparaciones (ejemplos)
 si Comparar(Mbappe, Jude) > 0 entonces {
@@ -41,5 +41,5 @@ si Comparar(Musiala, Kaka) > 0 entonces {
 
 ; Repeticion de ejemplo
 Repetir(3) [
-    narrar(Entrenamiento en curso)
+    narrar("Entrenamiento en curso")
 ] FinRep
