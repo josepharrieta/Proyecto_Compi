@@ -165,11 +165,3 @@ Repetir(3) [
 - Joseph Arrieta
 - Arturo Chavarría
 
-## Versión
-
-- **Fecha**: Octubre 2025
-- **Versión**: 2.0
-
-## Licencia
-
-Proyecto académico - Universidad [Nombre Universidad]
