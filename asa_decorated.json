@@ -1,0 +1,123 @@
+{
+  "decorations": {
+    "2274766069648": {
+      "definicion": "atleta1",
+      "tipo": "entity:Deportista"
+    },
+    "2274762210832": {
+      "definicion": "atleta2",
+      "tipo": "entity:Deportista"
+    },
+    "2274766618704": {
+      "tipo": "list:Deportista",
+      "nombre": "competidores"
+    },
+    "2274765535312": {
+      "tipo": "condicional"
+    },
+    "2274765533008": {
+      "tipo": "void",
+      "args_types": [
+        "entity:Deportista"
+      ]
+    },
+    "2274766282704": {
+      "tipo": "condicional"
+    },
+    "2274762339056": {
+      "tipo": "void",
+      "args_types": [
+        "entity:Deportista"
+      ]
+    },
+    "2274766048336": {
+      "tipo": "repetir",
+      "count": "3"
+    },
+    "2274766511712": {
+      "tipo": "input",
+      "args": [
+        "entrenamiento"
+      ]
+    },
+    "2274766048144": {
+      "tipo": "void",
+      "args_types": [
+        "unknown"
+      ]
+    }
+  },
+  "errors": [
+    {
+      "message": "Identificador 'progreso' usado antes de ser declarado.",
+      "line": 14,
+      "col": 0,
+      "severity": "ERROR"
+    }
+  ],
+  "snapshots": [
+    {
+      "when": "2025-11-09T23:48:11.986239",
+      "node": "Deportista",
+      "line": 2,
+      "table": {
+        "scope_0": {
+          "atleta1": {
+            "name": "atleta1",
+            "type": "entity:Deportista",
+            "defined_line": 2,
+            "scope_level": 0
+          }
+        }
+      }
+    },
+    {
+      "when": "2025-11-09T23:48:11.986442",
+      "node": "Deportista",
+      "line": 3,
+      "table": {
+        "scope_0": {
+          "atleta1": {
+            "name": "atleta1",
+            "type": "entity:Deportista",
+            "defined_line": 2,
+            "scope_level": 0
+          },
+          "atleta2": {
+            "name": "atleta2",
+            "type": "entity:Deportista",
+            "defined_line": 3,
+            "scope_level": 0
+          }
+        }
+      }
+    },
+    {
+      "when": "2025-11-09T23:48:11.986623",
+      "node": "Lista",
+      "line": 4,
+      "table": {
+        "scope_0": {
+          "atleta1": {
+            "name": "atleta1",
+            "type": "entity:Deportista",
+            "defined_line": 2,
+            "scope_level": 0
+          },
+          "atleta2": {
+            "name": "atleta2",
+            "type": "entity:Deportista",
+            "defined_line": 3,
+            "scope_level": 0
+          },
+          "competidores": {
+            "name": "competidores",
+            "type": "list:Deportista",
+            "defined_line": 4,
+            "scope_level": 0
+          }
+        }
+      }
+    }
+  ]
+}
