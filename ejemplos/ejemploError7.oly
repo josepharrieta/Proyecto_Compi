@@ -1,0 +1,13 @@
+; Programa con error en uso de variable no declarada
+Deportista jugador1 85 88 90 Futbol Brasil
+Deportista jugador2 87 85 89 Futbol Argentina
+
+narrar("Comparación de jugadores")
+
+si Comparar(jugador1, jugador2) > 0 entonces {
+    narrar("Mejor jugador:", jugador1)
+} sino {
+    narrar("Mejor jugador:", jugador3)
+} endif
+
+narrar("Análisis completado")

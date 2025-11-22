@@ -1,0 +1,21 @@
+; Programa de entrenamiento olímpico
+Deportista atleta1 85 90 80 Atletismo Mexico
+Deportista atleta2 82 88 84 Atletismo Colombia
+Lista Deportista equipo
+
+narrar("Inicio del programa de entrenamiento")
+
+si Comparar(atleta1, atleta2) > 0 entonces {
+    narrar("Atleta1 tiene mejor rendimiento")
+    equipo.agregar(atleta1)
+} sino {
+    narrar("Atleta2 tiene mejor rendimiento") 
+    equipo.agregar(atleta2)
+} endif
+
+Repetir(3) [
+    input(intensidad_entreno)
+    narrar("Día de entrenamiento con intensidad:", intensidad_entreno)
+] FinRep
+
+narrar("Programa completado")

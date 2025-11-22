@@ -1,0 +1,11 @@
+; Programa con error en función narrar
+Deportista corredor 92 88 90 Atletismo Kenya
+
+narrar("Inicio de competencia")
+
+Repetir(3) [
+    narrar("Vuelta número", (Repetir + 1)
+    input(tiempo_vuelta)
+] FinRep
+
+narrar("Competencia finalizada")

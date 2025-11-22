@@ -1,0 +1,25 @@
+; Torneo eliminatorio con 4 participantes
+Deportista jugador1 88 85 90 Tenis España
+Deportista jugador2 86 87 89 Tenis Serbia
+Deportista jugador3 87 84 88 Tenis USA
+Deportista jugador4 85 86 87 Tenis Rusia
+
+narrar("Semifinal 1: Jugador1 vs Jugador2")
+narrar("Resultado:", Comparar(jugador1, jugador2))
+
+narrar("Semifinal 2: Jugador3 vs Jugador4") 
+narrar("Resultado:", Comparar(jugador3, jugador4))
+
+si Comparar(jugador1, jugador2) > 0 entonces {
+    narrar("Jugador1 pasa a la final")
+} sino {
+    narrar("Jugador2 pasa a la final")
+} endif
+
+si Comparar(jugador3, jugador4) > 0 entonces {
+    narrar("Jugador3 pasa a la final")
+} sino {
+    narrar("Jugador4 pasa a la final")
+} endif
+
+narrar("Torneo eliminatorio concluido")

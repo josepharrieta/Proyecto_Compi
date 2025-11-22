@@ -1,0 +1,19 @@
+; Torneo de desempate múltiple
+Deportista jugadorA 90 88 92 Tenis España
+Deportista jugadorB 90 89 91 Tenis Francia
+Deportista jugadorC 89 90 90 Tenis Italia
+
+narrar("Iniciando torneo de desempate")
+
+si Comparar(jugadorA, jugadorB) == 0 entonces {
+    narrar("Empate entre A y B")
+    si Comparar(jugadorA, jugadorC) > 0 entonces {
+        narrar("Gana jugadorA por diferencia con C")
+    } sino {
+        narrar("Gana jugadorB por diferencia con C")
+    } endif
+} sino {
+    narrar("Hay un ganador claro entre A y B")
+} endif
+
+narrar("Torneo concluido")

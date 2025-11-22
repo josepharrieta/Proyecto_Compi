@@ -1,0 +1,18 @@
+; Sistema de clasificación para torneo
+Deportista corredorA 92 88 90 Atletismo Kenya  
+Deportista corredorB 90 91 89 Atletismo Etiopia
+Lista Deportista clasificados
+
+input(limite_clasificacion)
+
+si Comparar(corredorA, limite_clasificacion) >= 0 entonces {
+    clasificados.agregar(corredorA)
+    narrar("Corredor A clasifica")
+} endif
+
+si Comparar(corredorB, limite_clasificacion) >= 0 entonces {
+    clasificados.agregar(corredorB)
+    narrar("Corredor B clasifica")
+} endif
+
+narrar("Total clasificados:", clasificados.contar())

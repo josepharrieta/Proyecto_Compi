@@ -1,0 +1,20 @@
+; Programa de evaluación continua
+Deportista atleta 80 75 78 Atletismo Chile
+input(meta_final)
+
+Repetir(5) [
+    input(evaluacion_dia)
+    narrar("Día", (Repetir + 1), "evaluación:", evaluacion_dia)
+    
+    si Comparar(evaluacion_dia, 75) > 0 entonces {
+        narrar("Rendimiento satisfactorio")
+    } sino {
+        narrar("Rendimiento necesita mejora")
+    } endif
+] FinRep
+
+si Comparar(atleta, meta_final) >= 0 entonces {
+    narrar("¡Atleta cumple con la meta final!")
+} sino {
+    narrar("Atleta no alcanzó la meta")
+} endif

@@ -1,0 +1,18 @@
+; Programa de entrenamiento con evaluación progresiva
+Deportista deportista 75 72 70 Natacion Australia
+input(objetivo_entrenamiento)
+
+narrar("Inicio programa de 4 semanas")
+
+Repetir(4) [
+    narrar("Semana", (Repetir + 1), "de entrenamiento")
+    input(rendimiento_semanal)
+    
+    si Comparar(rendimiento_semanal, objetivo_entrenamiento) >= 0 entonces {
+        narrar("¡Objetivo semanal cumplido!")
+    } sino {
+        narrar("Objetivo semanal no alcanzado")
+    } endif
+] FinRep
+
+narrar("Programa de entrenamiento finalizado")

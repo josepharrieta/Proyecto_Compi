@@ -1,0 +1,15 @@
+; Sistema de prueba de récords
+Deportista atletaActual 92 90 94 Atletismo Jamaica
+Deportista recordMundial 95 93 96 Atletismo USA
+
+narrar("Prueba de récord mundial iniciada")
+
+si Comparar(atletaActual, recordMundial) > 0 entonces {
+    narrar("¡NUEVO RÉCORD MUNDIAL!")
+    narrar("Atleta supera el récord existente")
+} sino {
+    narrar("Récord mundial permanece")
+    narrar("Faltaron", (95 - 92), "puntos para igualar")
+} endif
+
+narrar("Prueba de récord concluida")

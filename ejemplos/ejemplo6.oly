@@ -1,0 +1,23 @@
+; Sistema de selección para equipo nacional
+Deportista aspirante1 82 85 80 Futbol Argentina
+Deportista aspirante2 84 83 81 Futbol Brasil
+Deportista aspirante3 81 82 79 Futbol Uruguay
+
+Lista Deportista equipo_final
+
+si Comparar(aspirante1, 80) > 0 entonces {
+    equipo_final.agregar(aspirante1)
+    narrar("Aspirante1 seleccionado")
+}
+
+si Comparar(aspirante2, 80) > 0 entonces {
+    equipo_final.agregar(aspirante2)
+    narrar("Aspirante2 seleccionado")
+}
+
+si Comparar(aspirante3, 80) > 0 entonces {
+    equipo_final.agregar(aspirante3)
+    narrar("Aspirante3 seleccionado")
+}
+
+narrar("Equipo formado con", equipo_final.contar(), "jugadores")

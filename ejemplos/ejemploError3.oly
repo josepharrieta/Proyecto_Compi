@@ -1,0 +1,12 @@
+; Programa con error en estructura Repetir
+Deportista atleta 80 75 78 Natacion Chile
+
+narrar("Inicio programa de entrenamiento")
+
+Repetir(5 [
+    narrar("Día de entrenamiento")
+    input(intensidad)
+    narrar("Intensidad:", intensidad)
+] FinRep
+
+narrar("Programa completado")

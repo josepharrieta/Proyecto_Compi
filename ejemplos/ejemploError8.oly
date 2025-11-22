@@ -1,0 +1,11 @@
+; Programa con error en estructura RepetirHasta
+Deportista nadador 80 75 78 Natacion Australia
+
+narrar("Programa de entrenamiento intensivo")
+
+RepetirHasta(Comparar(nadador, 90) >= 0) 
+    narrar("Sesión de entrenamiento")
+    nadador.mejorar(5)
+] FinRepHast
+
+narrar("Entrenamiento completado")

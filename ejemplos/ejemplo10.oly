@@ -1,0 +1,18 @@
+; Sistema de clasificación por categorías
+Deportista pesoLigero 85 82 80 Boxeo Mexico
+Deportista pesoMedio 88 85 83 Boxeo USA
+Deportista pesoPesado 92 90 88 Boxeo Russia
+
+input(categoria_actual)
+
+si categoria_actual == "ligero" entonces {
+    narrar("Campeón peso ligero:", pesoLigero)
+} sino {
+    si categoria_actual == "medio" entonces {
+        narrar("Campeón peso medio:", pesoMedio)
+    } sino {
+        narrar("Campeón peso pesado:", pesoPesado)
+    } endif
+} endif
+
+narrar("Ceremonia de campeones completada")

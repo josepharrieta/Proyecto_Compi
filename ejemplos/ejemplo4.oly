@@ -1,0 +1,13 @@
+; Competencia de natación con eliminatorias
+Deportista nadador1 88 85 90 Natacion USA
+Deportista nadador2 86 87 89 Natacion Australia
+Deportista nadador3 85 84 88 Natacion Russia
+
+narrar("Resultados eliminatoria 1:", Comparar(nadador1, nadador2))
+narrar("Resultados eliminatoria 2:", Comparar(nadador2, nadador3))
+
+Repetir(3) [
+    narrar("Sesión de entrenamiento completada")
+] FinRep
+
+narrar("Competencia de natación finalizada")

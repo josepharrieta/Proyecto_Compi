@@ -1,0 +1,17 @@
+; Programa con error en declaración de Lista
+Deportista deportista1 85 90 80 Atletismo Mexico
+Deportista deportista2 82 88 84 Atletismo Colombia
+
+Lista Deportista
+
+narrar("Inicio del programa")
+
+si Comparar(deportista1, deportista2) > 0 entonces {
+    narrar("Deportista1 es mejor")
+    listaCompetidores.agregar(deportista1)
+} sino {
+    narrar("Deportista2 es mejor")
+    listaCompetidores.agregar(deportista2)
+} endif
+
+narrar("Programa finalizado")

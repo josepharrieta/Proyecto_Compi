@@ -1,0 +1,13 @@
+; Programa con error en función Comparar
+Deportista jugadorA 88 85 90 Futbol Brasil
+Deportista jugadorB 86 87 89 Futbol Argentina
+
+narrar("Comparación entre jugadores")
+
+si Comparar(jugadorA, jugadorB > 0 entonces {
+    narrar("JugadorA es mejor")
+} sino {
+    narrar("JugadorB es mejor")
+} endif
+
+narrar("Análisis completado")

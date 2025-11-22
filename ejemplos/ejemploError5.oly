@@ -1,0 +1,13 @@
+; Programa con error en estructura condicional
+Deportista atletaA 88 85 90 Tenis España
+Deportista atletaB 86 87 89 Tenis Francia
+
+narrar("Evaluación de tenistas")
+
+si Comparar(atletaA, atletaB) > 0 entonces 
+    narrar("AtletaA tiene mejor ranking")
+} sino {
+    narrar("AtletaB tiene mejor ranking")
+} endif
+
+narrar("Evaluación completada")

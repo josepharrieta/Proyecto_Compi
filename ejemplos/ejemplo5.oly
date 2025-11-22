@@ -1,0 +1,19 @@
+; Simulador de rondas de competencia
+Deportista competidor1 85 88 90 Boxeo Mexico
+Deportista competidor2 87 85 89 Boxeo USA
+
+input(numero_rondas)
+
+Repetir(numero_rondas) [
+    narrar("Ronda", (Repetir + 1), "inicia")
+    
+    si Comparar(competidor1, competidor2) > 0 entonces {
+        narrar("Gana competidor1 la ronda")
+    } sino {
+        narrar("Gana competidor2 la ronda")
+    } endif
+    
+    input(continuar_ronda)
+] FinRep
+
+narrar("Competencia finalizada")

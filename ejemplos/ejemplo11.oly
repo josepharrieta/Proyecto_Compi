@@ -1,0 +1,17 @@
+; Simulador de enfrentamientos por rondas
+Deportista equipoLocal 87 85 89 Futbol Argentina
+Deportista equipoVisitante 85 88 86 Futbol Brasil
+
+Repetir(3) [
+    narrar("Minuto", (Repetir * 30))
+    input(accion_jugada)
+    
+    si Comparar(equipoLocal, equipoVisitante) > 0 entonces {
+        narrar("Ataque del equipo local")
+    } sino {
+        narrar("Ataque del equipo visitante")
+    } endif
+] FinRep
+
+narrar("Partido finalizado")
+narrar("Resultado final:", Comparar(equipoLocal, equipoVisitante))

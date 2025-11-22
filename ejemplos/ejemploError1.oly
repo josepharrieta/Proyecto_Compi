@@ -1,0 +1,15 @@
+; Programa de competencia con error en lista
+Deportista competidor1 85 88 90 Boxeo Mexico
+Deportista competidor2 87 85 89 Boxeo USA
+
+narrar("Inicia competencia de boxeo")
+
+si Comparar(competidor1, competidor2) > 0 entonces {
+    narrar("Gana competidor1")
+    listaClasificados.agregar(competidor1)
+} sino {
+    narrar("Gana competidor2")
+    listaClasificados.agregar(competidor2)
+} endif
+
+narrar("Competencia finalizada")

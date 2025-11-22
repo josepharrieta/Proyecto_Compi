@@ -1,0 +1,12 @@
+; Programa con error en función input
+Deportista corredor 92 88 90 Atletismo Jamaica
+
+narrar("Programa de registro de tiempos")
+
+Repetir(3) [
+    narrar("Registro de tiempo")
+    input()
+    narrar("Tiempo registrado")
+] FinRep
+
+narrar("Programa completado")

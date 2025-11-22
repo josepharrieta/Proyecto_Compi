@@ -1,0 +1,13 @@
+; Programa con error en declaración de Deportista
+Deportista 85 90 80 Atletismo Mexico
+Deportista atletaCorrecto 82 88 84 Atletismo Colombia
+
+narrar("Programa de evaluación")
+
+si Comparar(atletaCorrecto, 85) > 0 entonces {
+    narrar("Atleta cumple estándar")
+} sino {
+    narrar("Atleta necesita mejorar")
+} endif
+
+narrar("Evaluación finalizada")

@@ -1,0 +1,14 @@
+; Programa con error en cierre de bloque
+Deportista tenista 88 85 90 Tenis Serbia
+
+narrar("Inicio del torneo")
+
+Repetir(2) [
+    narrar("Set número", (Repetir + 1))
+    input(resultado_set)
+    
+    si Comparar(resultado_set, 6) >= 0 entonces {
+        narrar("Set ganado")
+    
+
+narrar("Torneo finalizado")
