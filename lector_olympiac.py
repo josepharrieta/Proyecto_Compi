@@ -19,12 +19,17 @@ Dependencias:
 """
 
 import os
+import sys
 from explorador import AnalizadorLexico
 from analizador_sintactico import parse_from_tokens
 try:
     from verificador import Verifier
 except Exception:
     Verifier = None
+try:
+    from generador import construir_codigo
+except Exception:
+    construir_codigo = None
 
 
 def leer_archivo_olympiac(ruta_archivo):
@@ -216,12 +221,30 @@ def procesar_archivo_tuplas(ruta_archivo):
 def main():
     """
     Función principal de demostración del flujo completo.
-    """
-    import sys
     
-    if len(sys.argv) > 1:
-        ruta = sys.argv[1]
-    else:
+    Uso:
+        python lector_olympiac.py archivo.oly                    # Análisis completo
+        python lector_olympiac.py archivo.oly -g salida.py       # Generar código Python
+        python lector_olympiac.py archivo.oly --generate output.py
+    """
+    # Parsear argumentos
+    generar = False
+    salida_gen = None
+    ruta = None
+    
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg in ('-g', '--generate'):
+            generar = True
+            if i + 1 < len(sys.argv) and not sys.argv[i + 1].startswith('-'):
+                salida_gen = sys.argv[i + 1]
+                i += 1
+        elif not arg.startswith('-'):
+            ruta = arg
+        i += 1
+    
+    if not ruta:
         # Buscar primer archivo .oly en el directorio
         archivos = [f for f in os.listdir('.') if f.endswith('.oly')]
         if archivos:
@@ -230,6 +253,7 @@ def main():
         else:
             print("No se encontraron archivos .oly")
             print("Uso: python lector_olympiac.py archivo.oly")
+            print("      python lector_olympiac.py archivo.oly -g salida.py")
             return
     
     print("=" * 80)
@@ -263,8 +287,22 @@ def main():
         print("[PASO 3] Enviando tokens al analizador sintáctico...")
         asa = enviar_a_analizador_sintactico(tokens)
         print(f"   ✓ asa generado exitosamente\n")
+
+        # Si se solicita generación, hacer eso primero
+        if generar:
+            if construir_codigo:
+                print("[PASO 4 (GENERACIÓN)] Generando código Python...")
+                codigo_python = construir_codigo(asa)
+                salida_final = salida_gen or 'programa_generado.py'
+                with open(salida_final, 'w', encoding='utf-8') as f:
+                    f.write(codigo_python)
+                print(f"   ✓ Código generado en: {salida_final}")
+                print(f"   Para ejecutar: python {salida_final}\n")
+            else:
+                print("   ✗ Generador no disponible (construir_codigo no cargado)\n")
+            return
         
-        # Mostrar asa
+        # Mostrar asa (análisis normal, no generación)
         print("[RESULTADO] Árbol de Sintaxis Abstracta (asa):")
         print("-" * 80)
         for linea in asa.preorder_lines():
