@@ -94,15 +94,32 @@ tokens, analizador = enviar_a_explorador(lineas)
 ast = enviar_a_analizador_sintactico(tokens)
 ```
 
-### Método 3: Desde Línea de Comandos
+### Método 3: Desde Línea de Comandos - Análisis Completo
 
 ```bash
-# Procesar archivo y mostrar resultado
-python lector_olympiac.py ejemplo1.oly
-
-# Ejecutar ejemplos de demostración
-python ejemplo_flujo.py
+# Procesar archivo y mostrar AST + verificación semántica
+python lector_olympiac.py ejemplo_asa.oly
 ```
+
+### Método 4: Desde Línea de Comandos - Generar Código Python
+
+El flujo de compilación es: **archivo .oly → Lexer → Tokens → Parser → ASA → Generador → código Python**
+
+```bash
+# Generar código Python desde archivo Olympiac
+python lector_olympiac.py ejemplo_asa.oly -g programa_salida.py
+
+# O alternativa con nombre largo
+python lector_olympiac.py ejemplo_asa.oly --generate programa_salida.py
+
+# Ejecutar el programa generado
+python programa_salida.py
+```
+
+**Notas sobre la generación:**
+- Sin `-g`: muestra análisis completo (ASA, verificación semántica)
+- Con `-g archivo.py`: genera código Python ejecutable
+- El código generado incluye ambiente estándar (funciones helpers: `narrar`, `comparar`, `registrar_deportista`)
 
 ## 🧪 Ejecutar Tests
 
@@ -112,6 +129,31 @@ python test_explorador.py
 
 # Tests del analizador sintáctico
 python -m pytest test_analizador_sintactico.py
+```
+
+## 🔄 Flujo Completo de Compilación (Lexer → Parser → Generador)
+
+Usando `lector_olympiac.py` como punto de entrada:
+
+```
+archivo.oly
+    ↓
+[PASO 1] Lector lee el archivo
+    ↓ (líneas de código)
+[PASO 2] Explorador (Lexer) tokeniza
+    ↓ (tokens)
+[PASO 3] Lector envía tokens a Parser
+    ↓ (ASA/AST)
+[PASO 4a] Opción ANÁLISIS: Mostrar AST + Verificador Semántico
+         → Salida: AST en consola + decoraciones + errores semánticos
+    
+[PASO 4b] Opción GENERACIÓN (-g flag): Generador crea código Python
+         → Salida: archivo .py ejecutable
+```
+
+**Comando rápido para generar y ejecutar:**
+```bash
+python lector_olympiac.py ejemplo_asa.oly -g salida.py && python salida.py
 ```
 
 ## Ejemplo de Código Olympiac
