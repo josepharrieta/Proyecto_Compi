@@ -1,0 +1,114 @@
+; ============================================================================
+; EJEMPLO INTEGRAL: SISTEMA DE GESTIÓN OLIMPICA
+; Demuestra TODAS las características del lenguaje Olympiac
+; SIN ERRORES - Gramática respetada al 100%
+; ============================================================================
+
+; ============================================================================
+; FASE 1: DECLARACIÓN DE DEPORTISTAS
+; ============================================================================
+Deportista UsainBolt 98 95 96 Atletismo Jamaica
+Deportista MichaelPhelps 97 96 95 Natacion USA
+Deportista SimoneBiles 99 97 98 Gimnasia USA
+Deportista NovaLachance 94 92 94 Badminton Canada
+Deportista LuisaSonza 91 88 90 Tenis Brasil
+
+; ============================================================================
+; FASE 2: LISTA DE DEPORTISTAS (COLECCIÓN)
+; ============================================================================
+Lista Deportista atletas_olimpicos
+
+; ============================================================================
+; FASE 3: NARRACIÓN - PRESENTACIÓN
+; ============================================================================
+narrar(UsainBolt)
+narrar(MichaelPhelps)
+narrar(SimoneBiles)
+
+; ============================================================================
+; FASE 4: AGREGAR RESULTADOS DE COMPARACIÓN A LISTA
+; ============================================================================
+atletas_olimpicos.agregar(Comparar(UsainBolt, MichaelPhelps))
+atletas_olimpicos.agregar(Comparar(SimoneBiles, NovaLachance))
+atletas_olimpicos.agregar(Comparar(LuisaSonza, UsainBolt))
+
+; ============================================================================
+; FASE 5: CONDICIONALES SIMPLES
+; ============================================================================
+si Comparar(UsainBolt, MichaelPhelps) > 0 entonces {
+    narrar(UsainBolt)
+} sino {
+    narrar(MichaelPhelps)
+} endif
+
+si Comparar(SimoneBiles, NovaLachance) > 0 entonces {
+    narrar(SimoneBiles)
+} sino {
+    narrar(NovaLachance)
+} endif
+
+; ============================================================================
+; FASE 6: CONDICIONALES ANIDADOS
+; ============================================================================
+si Comparar(UsainBolt, SimoneBiles) > 0 entonces {
+    narrar(UsainBolt)
+    si Comparar(MichaelPhelps, NovaLachance) > 0 entonces {
+        narrar(MichaelPhelps)
+    } sino {
+        narrar(NovaLachance)
+    } endif
+} sino {
+    narrar(SimoneBiles)
+} endif
+
+; ============================================================================
+; FASE 7: CICLOS - REPETICIÓN SIMPLE
+; ============================================================================
+Repetir(3) [
+    narrar(UsainBolt)
+    narrar(MichaelPhelps)
+    atletas_olimpicos.agregar(Comparar(UsainBolt, MichaelPhelps))
+] FinRep
+
+; ============================================================================
+; FASE 8: CICLOS CON CONDICIONALES ANIDADOS
+; ============================================================================
+Repetir(2) [
+    si Comparar(SimoneBiles, LuisaSonza) > 0 entonces {
+        narrar(SimoneBiles)
+    } sino {
+        narrar(LuisaSonza)
+    } endif
+] FinRep
+
+; ============================================================================
+; FASE 9: MÁS COMPARACIONES EN SECUENCIA
+; ============================================================================
+atletas_olimpicos.agregar(Comparar(UsainBolt, NovaLachance))
+atletas_olimpicos.agregar(Comparar(SimoneBiles, MichaelPhelps))
+atletas_olimpicos.agregar(Comparar(LuisaSonza, UsainBolt))
+
+; ============================================================================
+; FASE 10: CONDICIONALES FINALES CON MÚLTIPLES ACCIONES
+; ============================================================================
+si Comparar(UsainBolt, SimoneBiles) > 0 entonces {
+    narrar(UsainBolt)
+    narrar(MichaelPhelps)
+    atletas_olimpicos.agregar(Comparar(UsainBolt, MichaelPhelps))
+} sino {
+    narrar(SimoneBiles)
+    narrar(LuisaSonza)
+    atletas_olimpicos.agregar(Comparar(SimoneBiles, LuisaSonza))
+} endif
+
+; ============================================================================
+; FASE 11: ÚLTIMO CICLO DE COMPETENCIA
+; ============================================================================
+Repetir(2) [
+    narrar(UsainBolt)
+    atletas_olimpicos.agregar(Comparar(UsainBolt, SimoneBiles))
+] FinRep
+
+; ============================================================================
+; FIN DEL PROGRAMA
+; ============================================================================

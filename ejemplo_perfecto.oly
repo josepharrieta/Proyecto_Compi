@@ -1,0 +1,43 @@
+; Programa limpio que demuestra todas las características sin errores
+; Compilador Olympiac
+
+; Declaración de deportistas
+Deportista Mbappe 97 95 90 Futbol Inglaterra
+Deportista Kaka 91 80 90 Futbol Francia
+Deportista Jude 90 89 89 Futbol Brazil
+Deportista Musiala 87 90 92 Futbol Alemania
+
+; Creación de listas
+Lista Deportista mejoresJugadores
+Lista Deportista podio
+
+; Programa principal
+narrar("=== CLASIFICACION DE FUTBOLISTAS ===")
+narrar("Sistema iniciado")
+
+; Comparación 1
+si Comparar(Mbappe, Kaka) > 0 entonces {
+    narrar("Mbappe es mejor que Kaka")
+} sino {
+    narrar("Kaka es mejor que Mbappe")
+} endif
+
+; Comparación 2
+si Comparar(Jude, Musiala) > 0 entonces {
+    narrar("Jude lidera")
+} sino {
+    narrar("Musiala lidera")
+} endif
+
+; Ciclo de evaluación
+narrar("Iniciando ciclo de evaluación")
+Repetir(2) [
+    narrar("Ronda de competencia")
+    si Comparar(Mbappe, Jude) > 0 entonces {
+        narrar("  - Mbappe gana en esta ronda")
+    } sino {
+        narrar("  - Jude gana en esta ronda")
+    } endif
+] FinRep
+
+narrar("=== EVALUACION COMPLETADA ===")

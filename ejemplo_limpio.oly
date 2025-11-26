@@ -1,0 +1,64 @@
+; ============================================================================
+; EJEMPLO LIMPIO: SISTEMA DE GESTIÓN OLIMPICA
+; Demuestra características del lenguaje Olympiac SIN ERRORES
+; ============================================================================
+
+; ============================================================================
+; FASE 1: DECLARACIÓN DE DEPORTISTAS
+; ============================================================================
+Deportista UsainBolt 98 95 96 Atletismo Jamaica
+Deportista MichaelPhelps 97 96 95 Natacion USA
+Deportista SimoneBiles 99 97 98 Gimnasia USA
+Deportista NovaLachance 94 92 94 Badminton Canada
+Deportista LuisaSonza 91 88 90 Tenis Brasil
+
+; ============================================================================
+; FASE 2: NARRACIÓN - PRESENTACIÓN
+; ============================================================================
+narrar(UsainBolt)
+narrar(MichaelPhelps)
+narrar(SimoneBiles)
+
+; ============================================================================
+; FASE 3: COMPARACIONES MÚLTIPLES
+; ============================================================================
+Comparar(UsainBolt, MichaelPhelps)
+Comparar(SimoneBiles, NovaLachance)
+Comparar(LuisaSonza, UsainBolt)
+
+; ============================================================================
+; FASE 4: CICLOS - REPETICIÓN SIMPLE
+; ============================================================================
+Repetir(3) [
+    narrar(UsainBolt)
+    narrar(MichaelPhelps)
+    narrar(SimoneBiles)
+] FinRep
+
+; ============================================================================
+; FASE 5: CICLOS CON NARRACIONES MÚLTIPLES
+; ============================================================================
+Repetir(2) [
+    narrar(SimoneBiles)
+    narrar(LuisaSonza)
+    narrar(NovaLachance)
+] FinRep
+
+; ============================================================================
+; FASE 6: MÁS COMPARACIONES EN SECUENCIA
+; ============================================================================
+Comparar(UsainBolt, NovaLachance)
+Comparar(SimoneBiles, MichaelPhelps)
+Comparar(LuisaSonza, UsainBolt)
+
+; ============================================================================
+; FASE 7: OTRO CICLO DE COMPETENCIA
+; ============================================================================
+Repetir(2) [
+    narrar(UsainBolt)
+    narrar(SimoneBiles)
+] FinRep
+
+; ============================================================================
+; FIN DEL PROGRAMA
+; ============================================================================

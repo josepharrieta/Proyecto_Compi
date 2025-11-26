@@ -119,13 +119,16 @@ class Verifier:
         if err:
             self._add_error(err, node)
         else:
-            print(f"[TABLA] scope={self.table.current_level()} - Declarado: nombre='{name}' tipo='entity:Deportista' linea={line}")
-            print(self.table)
+            print(f"\n[TABLA] ✓ DECLARADO: Deportista '{name}'")
+            print(f"        Tipo: entity:Deportista | Línea: {line}")
+            print(f"        {self.table}")
         self._decorate(node, {"definicion": name, "tipo": "entity:Deportista"})
 
     def _visit_cargadeportistas(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
         # declare a synthetic list variable? We'll register no variable, but mark children
-        self._decorate(node, {"tipo": "list:Deportista", "cantidad": len(node.atributos.get('deportistas', []))})
+        cantidad = len(node.atributos.get('deportistas', []))
+        print(f"\n[TABLA] ✓ CARGA: {cantidad} deportistas cargados")
+        self._decorate(node, {"tipo": "list:Deportista", "cantidad": cantidad})
         for i, c in enumerate(node.hijos):
             self._visit(c, node, i)
 
@@ -138,8 +141,9 @@ class Verifier:
             if err:
                 self._add_error(err, node)
             else:
-                print(f"[TABLA] Declarado lista {nombre} tipo list:{tipo}")
-                print(self.table)
+                print(f"\n[TABLA] ✓ DECLARADO: Lista '{nombre}'")
+                print(f"        Tipo: list:{tipo}")
+                print(f"        {self.table}")
         self._decorate(node, {"tipo": f"list:{tipo}", "nombre": nombre})
         self._default_visit(node)
 
@@ -392,14 +396,26 @@ class Verifier:
                 print_node(h, level + 1)
 
         # print to stdout
+        print("\n" + "=" * 80)
+        print("[VERIFICACION SEMANTICA] RESUMEN DE ANÁLISIS")
+        print("=" * 80)
+        print(f"\nTabla de Símbolos Final (Scope Global):")
+        print(self.table)
+        
+        print("\n" + "=" * 80)
         print("[RESULTADO] ASA DECORADO:")
+        print("=" * 80)
         print_node(self.root)
+        
+        print("\n" + "=" * 80)
+        print("[ERRORES SEMANTICOS]")
+        print("=" * 80)
         if self.errors:
-            print("\nErrores semanticos:")
+            print(f"Total de errores: {len(self.errors)}\n")
             for e in self.errors:
                 print(f"  {e}")
         else:
-            print("\nSin errores semanticos detectados.")
+            print("✓ Sin errores semanticos detectados.")
 
         # also export decorations + errors + snapshots to JSON in cwd
         out = {
@@ -411,6 +427,6 @@ class Verifier:
             path = os.path.join(os.getcwd(), 'asa_decorated.json')
             with open(path, 'w', encoding='utf-8') as f:
                 json.dump(out, f, ensure_ascii=False, indent=2)
-            print(f"\nDecorations exported to: {path}")
+            print(f"\n✓ Decorations exported to: {path}")
         except Exception as ex:
             print(f"Error exporting decorations: {ex}")
