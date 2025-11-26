@@ -178,8 +178,21 @@ class Verifier:
                     entry = self.table.lookup(obj.contenido)
                     if entry and entry.type.startswith('list'):
                         # method call on list; decorate and skip declaration error
-                        self._decorate(node, {"method_of": obj.contenido})
+                        self._decorate(node, {"method_of": obj.contenido, "is_method": True})
                         return
+        # Also check if this is a known built-in method name
+        if name.lower() in ('agregar', 'append', 'add'):
+            # These are known methods; check if the previous tokens form a valid object.method pattern
+            if parent and idx > 0:
+                prev = parent.hijos[idx - 1]
+                if prev.tipo == 'Simbolo' and prev.contenido == '.' and idx > 1:
+                    obj = parent.hijos[idx - 2]
+                    if obj.tipo == 'Identificador':
+                        entry = self.table.lookup(obj.contenido)
+                        if entry:
+                            self._decorate(node, {"method_of": obj.contenido, "is_method": True, "method_name": name})
+                            return
+        
         entry = self.table.lookup(name)
         if not entry:
             if not self._in_error_context():
@@ -243,18 +256,18 @@ class Verifier:
         # condicion stored in atributos['condicion'] or as children
         self._decorate(node, {"tipo": "condicional"})
         # visit children (enter_scope handled by caller)
-        for c in node.hijos:
-            self._visit(c)
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
 
     def _visit_repetir(self, node: asaNode):
         self._decorate(node, {"tipo": "repetir", "count": node.contenido})
-        for c in node.hijos:
-            self._visit(c)
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
 
     def _visit_repetirhasta(self, node: asaNode):
         self._decorate(node, {"tipo": "repetir_hasta", "condicion": node.contenido})
-        for c in node.hijos:
-            self._visit(c)
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
 
     def _visit_binaryop(self, node: asaNode):
         # binary arithmetic or comparison

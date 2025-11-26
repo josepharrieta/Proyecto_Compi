@@ -32,8 +32,8 @@ def agregar(lista, valor):
 # === Código generado ===
 
 # ; ============================================================================
-# ; EJEMPLO LIMPIO: SISTEMA DE GESTIÓN OLIMPICA
-# ; Demuestra características del lenguaje Olympiac SIN ERRORES
+# ; EJEMPLO LIMPIO: SISTEMA DE GESTIÓN OLIMPICA AVANZADO
+# ; Demuestra: Deportistas, Narración, Comparaciones, Listas, Condicionales, Ciclos
 # ; ============================================================================
 # ; ============================================================================
 # ; FASE 1: DECLARACIÓN DE DEPORTISTAS
@@ -44,49 +44,72 @@ registrar_deportista('SimoneBiles', ['99', '97', '98'], 'Gimnasia', 'USA')
 registrar_deportista('NovaLachance', ['94', '92', '94'], 'Badminton', 'Canada')
 registrar_deportista('LuisaSonza', ['91', '88', '90'], 'Tenis', 'Brasil')
 # ; ============================================================================
-# ; FASE 2: NARRACIÓN - PRESENTACIÓN
+# ; FASE 2: DECLARACIÓN DE LISTAS
+# ; ============================================================================
+medallistas = []  # lista declarada
+competidores = []  # lista declarada
+# ; ============================================================================
+# ; FASE 3: NARRACIÓN INICIAL
 # ; ============================================================================
 narrar('UsainBolt')
 narrar('MichaelPhelps')
 narrar('SimoneBiles')
 # ; ============================================================================
-# ; FASE 3: COMPARACIONES MÚLTIPLES
+# ; FASE 4: COMPARACIONES Y AGREGACIÓN A LISTAS
 # ; ============================================================================
-comparar('UsainBolt', 'MichaelPhelps')  # resultado descartado
-comparar('SimoneBiles', 'NovaLachance')  # resultado descartado
-comparar('LuisaSonza', 'UsainBolt')  # resultado descartado
+if True:
+    medallistas.append('UsainBolt')
+if True:
+    medallistas.append('SimoneBiles')
+if True:
+    medallistas.append('LuisaSonza')
 # ; ============================================================================
-# ; FASE 4: CICLOS - REPETICIÓN SIMPLE
+# ; FASE 5: AGREGACIÓN A SEGUNDA LISTA
+# ; ============================================================================
+competidores.append('UsainBolt')
+competidores.append('MichaelPhelps')
+competidores.append('SimoneBiles')
+# ; ============================================================================
+# ; FASE 6: CICLO SIMPLE CON NARRACIÓN
 # ; ============================================================================
 for _i in range(3):
     narrar('UsainBolt')
     narrar('MichaelPhelps')
-    narrar('SimoneBiles')
 # ; ============================================================================
-# ; FASE 5: CICLOS CON NARRACIONES MÚLTIPLES
+# ; FASE 7: CICLO CON NARRACIÓN MÚLTIPLE
 # ; ============================================================================
 for _i in range(2):
     narrar('SimoneBiles')
     narrar('LuisaSonza')
     narrar('NovaLachance')
 # ; ============================================================================
-# ; FASE 6: MÁS COMPARACIONES EN SECUENCIA
+# ; FASE 8: CONDICIONAL SIMPLE - SIN SINO
+# ; ============================================================================
+if True:
+    narrar('UsainBolt')
+# ; ============================================================================
+# ; FASE 9: OTRO CONDICIONAL SIMPLE
+# ; ============================================================================
+if True:
+    narrar('SimoneBiles')
+# ; ============================================================================
+# ; FASE 10: MÁS COMPARACIONES
 # ; ============================================================================
 comparar('UsainBolt', 'NovaLachance')  # resultado descartado
 comparar('SimoneBiles', 'MichaelPhelps')  # resultado descartado
-comparar('LuisaSonza', 'UsainBolt')  # resultado descartado
+comparar('LuisaSonza', 'SimoneBiles')  # resultado descartado
 # ; ============================================================================
-# ; FASE 7: OTRO CICLO DE COMPETENCIA
+# ; FASE 11: CONDICIONAL CON MÚLTIPLES ACCIONES
 # ; ============================================================================
-for _i in range(2):
+if True:
     narrar('UsainBolt')
-    narrar('SimoneBiles')
+    narrar('MichaelPhelps')
 # ; ============================================================================
-# ; FASE 8: REPETIR HASTA - CICLOS CON CONTADOR
+# ; FASE 12: CICLO HASTA CON CONDICIONAL
 # ; ============================================================================
 for _j in range(2):
-    narrar('UsainBolt')
-    narrar('SimoneBiles')
+    if True:
+        narrar('SimoneBiles')
 # ; ============================================================================
 # ; FIN DEL PROGRAMA
 # ; ============================================================================

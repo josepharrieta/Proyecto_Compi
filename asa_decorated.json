@@ -1,124 +1,237 @@
 {
   "decorations": {
-    "1961849980352": {
+    "2262179258608": {
       "definicion": "UsainBolt",
       "tipo": "entity:Deportista"
     },
-    "1961849980400": {
+    "2262179258656": {
       "definicion": "MichaelPhelps",
       "tipo": "entity:Deportista"
     },
-    "1961849980448": {
+    "2262179258704": {
       "definicion": "SimoneBiles",
       "tipo": "entity:Deportista"
     },
-    "1961849980496": {
+    "2262179258752": {
       "definicion": "NovaLachance",
       "tipo": "entity:Deportista"
     },
-    "1961849980544": {
+    "2262179258800": {
       "definicion": "LuisaSonza",
       "tipo": "entity:Deportista"
     },
-    "1961849980832": {
+    "2262179259088": {
+      "tipo": "list:Deportista",
+      "nombre": "medallistas"
+    },
+    "2262179259136": {
+      "tipo": "list:Deportista",
+      "nombre": "competidores"
+    },
+    "2262179259328": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849980928": {
+    "2262179259424": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849981024": {
+    "2262179259520": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849981168": {
-      "tipo": "int",
-      "name": "Comparar",
-      "args": [
-        "UsainBolt",
-        "MichaelPhelps"
-      ],
-      "arg_types": [
-        "entity:Deportista",
-        "entity:Deportista"
-      ]
+    "2262179260672": {
+      "tipo": "condicional"
     },
-    "1961849981216": {
-      "tipo": "int",
-      "name": "Comparar",
-      "args": [
-        "SimoneBiles",
-        "NovaLachance"
-      ],
-      "arg_types": [
-        "entity:Deportista",
-        "entity:Deportista"
-      ]
+    "2262179260144": {
+      "ref": {
+        "name": "medallistas",
+        "type": "list:Deportista",
+        "defined_line": 18,
+        "scope_level": 0
+      }
     },
-    "1961849981264": {
-      "tipo": "int",
-      "name": "Comparar",
-      "args": [
-        "LuisaSonza",
-        "UsainBolt"
-      ],
-      "arg_types": [
-        "entity:Deportista",
-        "entity:Deportista"
-      ]
+    "2262179260288": {
+      "method_of": "medallistas",
+      "is_method": true
     },
-    "1961849981696": {
+    "2262179260480": {
+      "ref": {
+        "name": "UsainBolt",
+        "type": "entity:Deportista",
+        "defined_line": 9,
+        "scope_level": 0
+      }
+    },
+    "2262179261344": {
+      "tipo": "condicional"
+    },
+    "2262179260816": {
+      "ref": {
+        "name": "medallistas",
+        "type": "list:Deportista",
+        "defined_line": 18,
+        "scope_level": 0
+      }
+    },
+    "2262179260960": {
+      "method_of": "medallistas",
+      "is_method": true
+    },
+    "2262179261152": {
+      "ref": {
+        "name": "SimoneBiles",
+        "type": "entity:Deportista",
+        "defined_line": 11,
+        "scope_level": 0
+      }
+    },
+    "2262179262016": {
+      "tipo": "condicional"
+    },
+    "2262179261488": {
+      "ref": {
+        "name": "medallistas",
+        "type": "list:Deportista",
+        "defined_line": 18,
+        "scope_level": 0
+      }
+    },
+    "2262179261632": {
+      "method_of": "medallistas",
+      "is_method": true
+    },
+    "2262179261824": {
+      "ref": {
+        "name": "LuisaSonza",
+        "type": "entity:Deportista",
+        "defined_line": 13,
+        "scope_level": 0
+      }
+    },
+    "2262179259808": {
+      "ref": {
+        "name": "competidores",
+        "type": "list:Deportista",
+        "defined_line": 19,
+        "scope_level": 0
+      }
+    },
+    "2262179262256": {
+      "method_of": "competidores",
+      "is_method": true
+    },
+    "2262179262448": {
+      "ref": {
+        "name": "UsainBolt",
+        "type": "entity:Deportista",
+        "defined_line": 9,
+        "scope_level": 0
+      }
+    },
+    "2262179262640": {
+      "ref": {
+        "name": "competidores",
+        "type": "list:Deportista",
+        "defined_line": 19,
+        "scope_level": 0
+      }
+    },
+    "2262179262832": {
+      "method_of": "competidores",
+      "is_method": true
+    },
+    "2262179263024": {
+      "ref": {
+        "name": "MichaelPhelps",
+        "type": "entity:Deportista",
+        "defined_line": 10,
+        "scope_level": 0
+      }
+    },
+    "2262179263216": {
+      "ref": {
+        "name": "competidores",
+        "type": "list:Deportista",
+        "defined_line": 19,
+        "scope_level": 0
+      }
+    },
+    "2262179263408": {
+      "method_of": "competidores",
+      "is_method": true
+    },
+    "2262179263600": {
+      "ref": {
+        "name": "SimoneBiles",
+        "type": "entity:Deportista",
+        "defined_line": 11,
+        "scope_level": 0
+      }
+    },
+    "2262179264128": {
       "tipo": "repetir",
       "count": "3"
     },
-    "1961849981792": {
+    "2262179264224": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849981936": {
+    "2262179264368": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849982080": {
-      "tipo": "void",
-      "args_types": [
-        "entity:Deportista"
-      ]
-    },
-    "1961849982512": {
+    "2262179264800": {
       "tipo": "repetir",
       "count": "2"
     },
-    "1961849982608": {
+    "2262179264896": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849982752": {
+    "2262179265040": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849982896": {
+    "2262179265184": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849983280": {
+    "2262179265952": {
+      "tipo": "condicional"
+    },
+    "2262179266000": {
+      "tipo": "void",
+      "args_types": [
+        "entity:Deportista"
+      ]
+    },
+    "2262179266480": {
+      "tipo": "condicional"
+    },
+    "2262179266528": {
+      "tipo": "void",
+      "args_types": [
+        "entity:Deportista"
+      ]
+    },
+    "2262179266288": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -130,7 +243,7 @@
         "entity:Deportista"
       ]
     },
-    "1961849983376": {
+    "2262179283168": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -142,45 +255,41 @@
         "entity:Deportista"
       ]
     },
-    "1961849983472": {
+    "2262179283264": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
         "LuisaSonza",
-        "UsainBolt"
+        "SimoneBiles"
       ],
       "arg_types": [
         "entity:Deportista",
         "entity:Deportista"
       ]
     },
-    "1961849983904": {
-      "tipo": "repetir",
-      "count": "2"
+    "2262179284032": {
+      "tipo": "condicional"
     },
-    "1961849984000": {
+    "2262179284080": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849984144": {
+    "2262179284224": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1961849984960": {
+    "2262179284656": {
       "tipo": "repetir_hasta",
       "condicion": "2"
     },
-    "1961849984720": {
-      "tipo": "void",
-      "args_types": [
-        "entity:Deportista"
-      ]
+    "2262179284800": {
+      "tipo": "condicional"
     },
-    "1961849984864": {
+    "2262179284848": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
@@ -190,7 +299,7 @@
   "errors": [],
   "snapshots": [
     {
-      "when": "2025-11-26T05:40:17.503215",
+      "when": "2025-11-26T06:04:15.978330",
       "node": "Deportista",
       "line": 9,
       "table": {
@@ -205,7 +314,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:40:17.503215",
+      "when": "2025-11-26T06:04:15.978330",
       "node": "Deportista",
       "line": 10,
       "table": {
@@ -226,7 +335,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:40:17.503215",
+      "when": "2025-11-26T06:04:15.978330",
       "node": "Deportista",
       "line": 11,
       "table": {
@@ -253,7 +362,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:40:17.504224",
+      "when": "2025-11-26T06:04:15.978330",
       "node": "Deportista",
       "line": 12,
       "table": {
@@ -286,7 +395,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:40:17.504224",
+      "when": "2025-11-26T06:04:15.978330",
       "node": "Deportista",
       "line": 13,
       "table": {
@@ -319,6 +428,102 @@
             "name": "LuisaSonza",
             "type": "entity:Deportista",
             "defined_line": 13,
+            "scope_level": 0
+          }
+        }
+      }
+    },
+    {
+      "when": "2025-11-26T06:04:15.978330",
+      "node": "Lista",
+      "line": 18,
+      "table": {
+        "scope_0": {
+          "UsainBolt": {
+            "name": "UsainBolt",
+            "type": "entity:Deportista",
+            "defined_line": 9,
+            "scope_level": 0
+          },
+          "MichaelPhelps": {
+            "name": "MichaelPhelps",
+            "type": "entity:Deportista",
+            "defined_line": 10,
+            "scope_level": 0
+          },
+          "SimoneBiles": {
+            "name": "SimoneBiles",
+            "type": "entity:Deportista",
+            "defined_line": 11,
+            "scope_level": 0
+          },
+          "NovaLachance": {
+            "name": "NovaLachance",
+            "type": "entity:Deportista",
+            "defined_line": 12,
+            "scope_level": 0
+          },
+          "LuisaSonza": {
+            "name": "LuisaSonza",
+            "type": "entity:Deportista",
+            "defined_line": 13,
+            "scope_level": 0
+          },
+          "medallistas": {
+            "name": "medallistas",
+            "type": "list:Deportista",
+            "defined_line": 18,
+            "scope_level": 0
+          }
+        }
+      }
+    },
+    {
+      "when": "2025-11-26T06:04:15.978330",
+      "node": "Lista",
+      "line": 19,
+      "table": {
+        "scope_0": {
+          "UsainBolt": {
+            "name": "UsainBolt",
+            "type": "entity:Deportista",
+            "defined_line": 9,
+            "scope_level": 0
+          },
+          "MichaelPhelps": {
+            "name": "MichaelPhelps",
+            "type": "entity:Deportista",
+            "defined_line": 10,
+            "scope_level": 0
+          },
+          "SimoneBiles": {
+            "name": "SimoneBiles",
+            "type": "entity:Deportista",
+            "defined_line": 11,
+            "scope_level": 0
+          },
+          "NovaLachance": {
+            "name": "NovaLachance",
+            "type": "entity:Deportista",
+            "defined_line": 12,
+            "scope_level": 0
+          },
+          "LuisaSonza": {
+            "name": "LuisaSonza",
+            "type": "entity:Deportista",
+            "defined_line": 13,
+            "scope_level": 0
+          },
+          "medallistas": {
+            "name": "medallistas",
+            "type": "list:Deportista",
+            "defined_line": 18,
+            "scope_level": 0
+          },
+          "competidores": {
+            "name": "competidores",
+            "type": "list:Deportista",
+            "defined_line": 19,
             "scope_level": 0
           }
         }

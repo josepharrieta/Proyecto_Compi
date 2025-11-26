@@ -1,6 +1,6 @@
 ; ============================================================================
-; EJEMPLO LIMPIO: SISTEMA DE GESTIÓN OLIMPICA
-; Demuestra características del lenguaje Olympiac SIN ERRORES
+; EJEMPLO LIMPIO: SISTEMA DE GESTIÓN OLIMPICA AVANZADO
+; Demuestra: Deportistas, Narración, Comparaciones, Listas, Condicionales, Ciclos
 ; ============================================================================
 
 ; ============================================================================
@@ -13,30 +13,50 @@ Deportista NovaLachance 94 92 94 Badminton Canada
 Deportista LuisaSonza 91 88 90 Tenis Brasil
 
 ; ============================================================================
-; FASE 2: NARRACIÓN - PRESENTACIÓN
+; FASE 2: DECLARACIÓN DE LISTAS
+; ============================================================================
+Lista Deportista medallistas
+Lista Deportista competidores
+
+; ============================================================================
+; FASE 3: NARRACIÓN INICIAL
 ; ============================================================================
 narrar(UsainBolt)
 narrar(MichaelPhelps)
 narrar(SimoneBiles)
 
 ; ============================================================================
-; FASE 3: COMPARACIONES MÚLTIPLES
+; FASE 4: COMPARACIONES Y AGREGACIÓN A LISTAS
 ; ============================================================================
-Comparar(UsainBolt, MichaelPhelps)
-Comparar(SimoneBiles, NovaLachance)
-Comparar(LuisaSonza, UsainBolt)
+si Comparar(UsainBolt, MichaelPhelps) > 0 entonces {
+    medallistas.agregar(UsainBolt)
+} endif
+
+si Comparar(SimoneBiles, NovaLachance) > 0 entonces {
+    medallistas.agregar(SimoneBiles)
+} endif
+
+si Comparar(LuisaSonza, UsainBolt) > 0 entonces {
+    medallistas.agregar(LuisaSonza)
+} endif
 
 ; ============================================================================
-; FASE 4: CICLOS - REPETICIÓN SIMPLE
+; FASE 5: AGREGACIÓN A SEGUNDA LISTA
+; ============================================================================
+competidores.agregar(UsainBolt)
+competidores.agregar(MichaelPhelps)
+competidores.agregar(SimoneBiles)
+
+; ============================================================================
+; FASE 6: CICLO SIMPLE CON NARRACIÓN
 ; ============================================================================
 Repetir(3) [
     narrar(UsainBolt)
     narrar(MichaelPhelps)
-    narrar(SimoneBiles)
 ] FinRep
 
 ; ============================================================================
-; FASE 5: CICLOS CON NARRACIONES MÚLTIPLES
+; FASE 7: CICLO CON NARRACIÓN MÚLTIPLE
 ; ============================================================================
 Repetir(2) [
     narrar(SimoneBiles)
@@ -45,26 +65,41 @@ Repetir(2) [
 ] FinRep
 
 ; ============================================================================
-; FASE 6: MÁS COMPARACIONES EN SECUENCIA
+; FASE 8: CONDICIONAL SIMPLE - SIN SINO
+; ============================================================================
+si Comparar(UsainBolt, MichaelPhelps) > 0 entonces {
+    narrar(UsainBolt)
+} endif
+
+; ============================================================================
+; FASE 9: OTRO CONDICIONAL SIMPLE
+; ============================================================================
+si Comparar(SimoneBiles, NovaLachance) > 0 entonces {
+    narrar(SimoneBiles)
+} endif
+
+; ============================================================================
+; FASE 10: MÁS COMPARACIONES
 ; ============================================================================
 Comparar(UsainBolt, NovaLachance)
 Comparar(SimoneBiles, MichaelPhelps)
-Comparar(LuisaSonza, UsainBolt)
+Comparar(LuisaSonza, SimoneBiles)
 
 ; ============================================================================
-; FASE 7: OTRO CICLO DE COMPETENCIA
+; FASE 11: CONDICIONAL CON MÚLTIPLES ACCIONES
 ; ============================================================================
-Repetir(2) [
+si Comparar(UsainBolt, SimoneBiles) > 0 entonces {
     narrar(UsainBolt)
-    narrar(SimoneBiles)
-] FinRep
+    narrar(MichaelPhelps)
+} endif
 
 ; ============================================================================
-; FASE 8: REPETIR HASTA - CICLOS CON CONTADOR
+; FASE 12: CICLO HASTA CON CONDICIONAL
 ; ============================================================================
 RepetirHasta(2) [
-    narrar(UsainBolt)
-    narrar(SimoneBiles)
+    si Comparar(SimoneBiles, LuisaSonza) > 0 entonces {
+        narrar(SimoneBiles)
+    } endif
 ] FinRepHast
 
 ; ============================================================================

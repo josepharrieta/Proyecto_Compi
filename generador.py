@@ -85,7 +85,20 @@ class VisitorOlympiac:
         i = 0
         hijos = node.hijos
         while i < len(hijos):
-            # Patrón lista.agregar(...)
+            # Patrón lista.agregar(arg) - estructura: Identificador . Identificador ( Identificador )
+            if (i + 5 < len(hijos) and 
+                hijos[i].tipo == 'Identificador' and 
+                hijos[i+1].tipo == 'Simbolo' and hijos[i+1].contenido == '.' and 
+                hijos[i+2].tipo == 'Identificador' and hijos[i+2].contenido.lower() == 'agregar' and 
+                hijos[i+3].tipo == 'Simbolo' and hijos[i+3].contenido == '(' and
+                hijos[i+4].tipo == 'Identificador' and
+                hijos[i+5].tipo == 'Simbolo' and hijos[i+5].contenido == ')'):
+                lista_nombre = hijos[i].contenido
+                arg = hijos[i+4].contenido
+                self.emit(f"{lista_nombre}.append('{arg}')")
+                i += 6
+                continue
+            # Legacy: Patrón lista.agregar(...) con Invocacion
             if i + 2 < len(hijos) and hijos[i].tipo == 'Identificador' and hijos[i+1].tipo == 'Simbolo' and hijos[i+1].contenido == '.' and hijos[i+2].tipo == 'Invocacion' and hijos[i+2].contenido.lower().startswith('agregar('):
                 lista_nombre = hijos[i].contenido
                 inv = hijos[i+2]
@@ -152,15 +165,34 @@ class VisitorOlympiac:
         cond_py = self._translate_condition(cond_raw)
         self.emit(f"if {cond_py}:")
         self.indent_level += 1
-        for h in node.hijos:
-            if h.tipo == 'Sino':
+        
+        # Procesar hijos detectando patrones lista.agregar()
+        i = 0
+        hijos = node.hijos
+        while i < len(hijos):
+            # Patrón lista.agregar(arg)
+            if (i + 5 < len(hijos) and 
+                hijos[i].tipo == 'Identificador' and 
+                hijos[i+1].tipo == 'Simbolo' and hijos[i+1].contenido == '.' and 
+                hijos[i+2].tipo == 'Identificador' and hijos[i+2].contenido.lower() == 'agregar' and 
+                hijos[i+3].tipo == 'Simbolo' and hijos[i+3].contenido == '(' and
+                hijos[i+4].tipo == 'Identificador' and
+                hijos[i+5].tipo == 'Simbolo' and hijos[i+5].contenido == ')'):
+                lista_nombre = hijos[i].contenido
+                arg = hijos[i+4].contenido
+                self.emit(f"{lista_nombre}.append('{arg}')")
+                i += 6
+            elif hijos[i].tipo == 'Sino':
                 self.indent_level -= 1
                 self.emit("else:")
                 self.indent_level += 1
-                for sn in h.hijos:
+                for sn in hijos[i].hijos:
                     self.visit(sn)
+                i += 1
             else:
-                self.visit(h)
+                self.visit(hijos[i])
+                i += 1
+        
         self.indent_level -= 1
 
     def visit_Repetir(self, node: asaNode):

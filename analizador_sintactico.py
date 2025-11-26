@@ -250,51 +250,80 @@ class Parser:
     def parse_lista_o_carga(self) -> asaNode:
         tok_lista = self.expect(TipoToken.DECLARACION_ENTIDAD, texto="Lista")
         if not tok_lista:
-            return asaNode("ErrorSintactico", "Lista", {"linea": tok_lista.numero_linea if tok_lista else None})
-        # Lookahead para decidir carga vs declaración
+            return asaNode("ErrorSintactico", "Lista", {"linea": None})
+        
+        # Lookahead para decidir: ¿Es declaración simple o carga masiva?
         if self.peek() and self.peek().tipo_token == TipoToken.DECLARACION_ENTIDAD and self.peek().texto_original.lower() == "deportista":
-            self.advance()  # consume 'Deportista'
-            # Si lo siguiente es nombre + 3 números etc => carga masiva
-            deportistas = []
-            while self.peek() and self.peek().tipo_token == TipoToken.NOMBRE_IDENTIFICADOR:
-                start_pos = self.pos
-                nombre = self.advance()
-                numeros = []
-                for _ in range(3):
-                    if self.peek() and self.peek().tipo_token == TipoToken.NUMERO_ENTERO:
-                        numeros.append(self.advance().texto_original)
+            # Peek ahead: después de Deportista, ¿viene un nombre simple o nombre+números?
+            saved_pos = self.pos
+            tipo_token = self.advance()  # consume 'Deportista'
+            
+            # Si el siguiente token es nombre, puede ser carga masiva o declaración simple
+            if (self.peek() and self.peek().tipo_token == TipoToken.NOMBRE_IDENTIFICADOR):
+                nombre_token = self.peek()
+                # Intentar mirar un token más adelante para detectar carga masiva
+                # Carga masiva: nombre NUMERO NUMERO NUMERO ...
+                # Declaración simple: nombre (y luego EOF o comentario o siguiente comando)
+                
+                # Hacemos lookahead: si después del nombre viene un número, es carga masiva
+                self.advance()  # consume el nombre
+                es_carga_masiva = False
+                if self.peek() and self.peek().tipo_token == TipoToken.NUMERO_ENTERO:
+                    es_carga_masiva = True
+                
+                # Restaurar posición a después de 'Deportista'
+                self.pos = saved_pos
+                
+                if es_carga_masiva:
+                    # Parsear carga masiva
+                    deportistas = []
+                    while self.peek() and self.peek().tipo_token == TipoToken.NOMBRE_IDENTIFICADOR:
+                        start_pos = self.pos
+                        nombre = self.advance()
+                        numeros = []
+                        for _ in range(3):
+                            if self.peek() and self.peek().tipo_token == TipoToken.NUMERO_ENTERO:
+                                numeros.append(self.advance().texto_original)
+                            else:
+                                self.pos = start_pos
+                                break
+                        if len(numeros) != 3:
+                            break
+                        deporte = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
+                        pais = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
+                        if not (deporte and pais):
+                            break
+                        deportistas.append({
+                            "nombre": nombre.texto_original,
+                            "estadisticas": numeros,
+                            "deporte": deporte.texto_original,
+                            "pais": pais.texto_original
+                        })
+                    
+                    if deportistas:
+                        return asaNode("CargaDeportistas", "Lista Deportista", {"deportistas": deportistas, "linea": tok_lista.numero_linea})
                     else:
-                        # no es un bloque completo → retroceder y terminar
-                        self.pos = start_pos
-                        break
-                if len(numeros) != 3:
-                    break
-                deporte = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
-                pais = self.expect(TipoToken.NOMBRE_IDENTIFICADOR)
-                if not (deporte and pais):
-                    break
-                deportistas.append({
-                    "nombre": nombre.texto_original,
-                    "estadisticas": numeros,
-                    "deporte": deporte.texto_original,
-                    "pais": pais.texto_original
-                })
-            if deportistas:
-                return asaNode("CargaDeportistas", "Lista Deportista", {"deportistas": deportistas, "linea": tok_lista.numero_linea})
-            # Si no hubo secuencia válida, error
-            self._report_error("Se esperaba al menos un deportista completo en CargaDeportistas", self.peek())
-            return asaNode("ErrorSintactico", "CargaDeportistas", {"linea": tok_lista.numero_linea})
-        # Declaración simple Lista ::= 'Lista' Tipo Nombre
-        tipo = self.expect(TipoToken.NOMBRE_IDENTIFICADOR, mensaje="Tipo de lista inválido")
-        if tipo and tipo.texto_original.lower() not in ("deportista","pais"):
-            self._report_error("Tipo restringido debe ser 'Deportista' o 'Pais'", tipo)
+                        # No era carga masiva válida, retroceder a posición original
+                        self.pos = saved_pos
+                else:
+                    # Es declaración simple: ya estamos en saved_pos (después de Deportista)
+                    pass
+        
+        # Declaración simple: Lista Tipo Nombre
+        # El tipo puede ser DECLARACION_ENTIDAD (Deportista) o NOMBRE_IDENTIFICADOR
+        tipo = None
+        if self.peek() and self.peek().tipo_token == TipoToken.DECLARACION_ENTIDAD and self.peek().texto_original.lower() == "deportista":
+            tipo = self.advance()
+        else:
+            tipo = self.expect(TipoToken.NOMBRE_IDENTIFICADOR, mensaje="Tipo de lista inválido")
+        
         nombre = self.expect(TipoToken.NOMBRE_IDENTIFICADOR, mensaje="Nombre de lista faltante")
         atributos = {
             "tipo": tipo.texto_original if tipo else None,
             "nombre": nombre.texto_original if nombre else None,
             "linea": tok_lista.numero_linea
         }
-        return asaNode("Lista", atributos.get("nombre",""), atributos)
+        return asaNode("Lista", atributos.get("nombre", ""), atributos)
 
     # Invocaciones y funciones
     def parse_narrar(self) -> asaNode:
