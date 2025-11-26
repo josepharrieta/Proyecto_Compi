@@ -252,6 +252,7 @@ class Parser:
         if not tok_lista:
             return asaNode("ErrorSintactico", "Lista", {"linea": None})
         
+        print(f"[SINTAXIS] Parseando Lista en línea {tok_lista.numero_linea}")
         # Lookahead para decidir: ¿Es declaración simple o carga masiva?
         if self.peek() and self.peek().tipo_token == TipoToken.DECLARACION_ENTIDAD and self.peek().texto_original.lower() == "deportista":
             # Peek ahead: después de Deportista, ¿viene un nombre simple o nombre+números?
@@ -323,6 +324,7 @@ class Parser:
             "nombre": nombre.texto_original if nombre else None,
             "linea": tok_lista.numero_linea
         }
+        print(f"         [OK] Lista {nombre.texto_original if nombre else '???'} de tipo {tipo.texto_original if tipo else '???'} creada")
         return asaNode("Lista", atributos.get("nombre", ""), atributos)
 
     # Invocaciones y funciones

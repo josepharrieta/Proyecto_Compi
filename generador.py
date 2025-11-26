@@ -82,8 +82,11 @@ class VisitorOlympiac:
 
     # ---------------- Nodos -----------------
     def visit_Programa(self, node: asaNode):
+        print("\n[GENERACIÓN] ========== GENERANDO PROGRAMA ==========")
+        print(f"[GENERACIÓN] Total de elementos en programa: {len(node.hijos)}")
         i = 0
         hijos = node.hijos
+        elem_count = 0
         while i < len(hijos):
             # Patrón lista.agregar(arg) - estructura: Identificador . Identificador ( Identificador )
             if (i + 5 < len(hijos) and 
@@ -95,6 +98,8 @@ class VisitorOlympiac:
                 hijos[i+5].tipo == 'Simbolo' and hijos[i+5].contenido == ')'):
                 lista_nombre = hijos[i].contenido
                 arg = hijos[i+4].contenido
+                elem_count += 1
+                print(f"[GENERACIÓN] ({elem_count}) Agregación: {lista_nombre}.append('{arg}')")
                 self.emit(f"{lista_nombre}.append('{arg}')")
                 i += 6
                 continue
@@ -118,11 +123,15 @@ class VisitorOlympiac:
         stats = node.atributos.get('estadisticas', [])
         deporte = node.atributos.get('deporte', '')
         pais = node.atributos.get('pais', '')
+        linea = node.atributos.get('linea', '?')
+        print(f"[GENERACIÓN] Registrando deportista: {nombre} ({deporte}, {pais}) en línea {linea}")
         self.emit(f"registrar_deportista('{nombre}', {stats}, '{deporte}', '{pais}')")
 
     def visit_Lista(self, node: asaNode):
         nombre = node.atributos.get('nombre') or node.contenido or 'lista_dep'
-        self.emit(f"{nombre} = []  # lista declarada")
+        tipo = node.atributos.get('tipo') or 'Deportista'
+        print(f"[GENERACIÓN] Generando lista: {nombre} de tipo {tipo}")
+        self.emit(f"{nombre} = []  # lista declarada de tipo {tipo}")
 
     def visit_CargaDeportistas(self, node: asaNode):
         # CargaDeportistas: solo comentamos los datos; podrían declararse automáticamente.
@@ -132,9 +141,12 @@ class VisitorOlympiac:
 
     def visit_Narrar(self, node: asaNode):
         args = node.atributos.get('args', [])
+        linea = node.atributos.get('linea', '?')
         if not args:
+            print(f"[GENERACIÓN] Narración vacía en línea {linea}")
             self.emit("narrar('')")
         else:
+            print(f"[GENERACIÓN] Narrando: {', '.join(args)}")
             parts = ", ".join(self._format_arg(a) for a in args)
             self.emit(f"narrar({parts})")
 
@@ -163,6 +175,8 @@ class VisitorOlympiac:
     def visit_Condicional(self, node: asaNode):
         cond_raw = node.atributos.get('condicion', 'True')
         cond_py = self._translate_condition(cond_raw)
+        linea = node.atributos.get('linea', '?')
+        print(f"[GENERACIÓN] Condicional en línea {linea}: if {cond_py}")
         self.emit(f"if {cond_py}:")
         self.indent_level += 1
         
@@ -180,6 +194,7 @@ class VisitorOlympiac:
                 hijos[i+5].tipo == 'Simbolo' and hijos[i+5].contenido == ')'):
                 lista_nombre = hijos[i].contenido
                 arg = hijos[i+4].contenido
+                print(f"         Agregando {arg} a {lista_nombre}")
                 self.emit(f"{lista_nombre}.append('{arg}')")
                 i += 6
             elif hijos[i].tipo == 'Sino':
@@ -197,6 +212,7 @@ class VisitorOlympiac:
 
     def visit_Repetir(self, node: asaNode):
         count = node.contenido
+        print(f"[GENERACIÓN] Ciclo Repetir({count})")
         self.emit(f"for _i in range({count}):")
         self.indent_level += 1
         for h in node.hijos:
@@ -207,6 +223,7 @@ class VisitorOlympiac:
         # RepetirHasta(n) se traduce como: for i in range(n):
         # (aunque el nombre sugiera "hasta", en el ASA recibimos solo el número)
         count = node.contenido
+        print(f"[GENERACIÓN] Ciclo RepetirHasta({count})")
         self.emit(f"for _j in range({count}):")
         self.indent_level += 1
         for h in node.hijos:

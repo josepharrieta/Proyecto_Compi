@@ -136,13 +136,15 @@ class Verifier:
         # node.atributos may contain 'nombre'
         nombre = node.atributos.get('nombre')
         tipo = node.atributos.get('tipo') or 'unknown'
+        linea = node.atributos.get('linea', 0)
         if nombre:
-            err = self.table.declare(nombre, f"list:{tipo}", node, node.atributos.get('linea', 0))
+            err = self.table.declare(nombre, f"list:{tipo}", node, linea)
             if err:
                 self._add_error(err, node)
             else:
                 print(f"\n[TABLA] [OK] DECLARADO: Lista '{nombre}'")
-                print(f"        Tipo: list:{tipo}")
+                print(f"        Tipo: list:{tipo} | Línea: {linea}")
+                print(f"        Capacidad: sin límite (colección dinámica)")
                 print(f"        {self.table}")
         self._decorate(node, {"tipo": f"list:{tipo}", "nombre": nombre})
         self._default_visit(node)
@@ -204,6 +206,7 @@ class Verifier:
     def _visit_invocacion(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
         name = node.contenido
         args = node.atributos.get('args', [])
+        linea = node.atributos.get('linea', 0)
         # Use builtins if available
         lname = name.lower()
         if lname in self.builtins:
@@ -215,9 +218,13 @@ class Verifier:
             arg_types = [self._resolve_arg_type(a) for a in args]
             # specific check for comparar: require entity args
             if lname == 'comparar':
+                print(f"\n[SEMÁNTICA] Verificando Comparar(" + ", ".join(args) + f") en línea {linea}")
                 for i, t in enumerate(arg_types):
                     if not (isinstance(t, str) and t.startswith('entity')):
                         self._add_error(f"Argumento {i+1} de Comparar debe ser una entidad; encontrado '{t}'", node)
+                    else:
+                        print(f"           Arg {i+1}: {args[i]} es {t} [OK]")
+                print(f"           Tipo retorno: {b['ret']}")
             # mark decorations with resolved arg types
             self._decorate(node, {"tipo": b['ret'], "name": name, "args": args, "arg_types": arg_types})
         else:
