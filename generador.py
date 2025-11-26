@@ -163,10 +163,19 @@ class VisitorOlympiac:
                 self.visit(h)
         self.indent_level -= 1
 
+    def visit_Repetir(self, node: asaNode):
+        count = node.contenido
+        self.emit(f"for _i in range({count}):")
+        self.indent_level += 1
+        for h in node.hijos:
+            self.visit(h)
+        self.indent_level -= 1
+
     def visit_RepetirHasta(self, node: asaNode):
-        # Traduce como while not condición (simplificación)
-        cond_expr = self._translate_condition(node.contenido)
-        self.emit(f"while not ({cond_expr}):")
+        # RepetirHasta(n) se traduce como: for i in range(n):
+        # (aunque el nombre sugiera "hasta", en el ASA recibimos solo el número)
+        count = node.contenido
+        self.emit(f"for _j in range({count}):")
         self.indent_level += 1
         for h in node.hijos:
             self.visit(h)

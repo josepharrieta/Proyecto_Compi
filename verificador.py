@@ -119,7 +119,7 @@ class Verifier:
         if err:
             self._add_error(err, node)
         else:
-            print(f"\n[TABLA] ✓ DECLARADO: Deportista '{name}'")
+            print(f"\n[TABLA] [OK] DECLARADO: Deportista '{name}'")
             print(f"        Tipo: entity:Deportista | Línea: {line}")
             print(f"        {self.table}")
         self._decorate(node, {"definicion": name, "tipo": "entity:Deportista"})
@@ -141,7 +141,7 @@ class Verifier:
             if err:
                 self._add_error(err, node)
             else:
-                print(f"\n[TABLA] ✓ DECLARADO: Lista '{nombre}'")
+                print(f"\n[TABLA] [OK] DECLARADO: Lista '{nombre}'")
                 print(f"        Tipo: list:{tipo}")
                 print(f"        {self.table}")
         self._decorate(node, {"tipo": f"list:{tipo}", "nombre": nombre})
@@ -415,7 +415,7 @@ class Verifier:
             for e in self.errors:
                 print(f"  {e}")
         else:
-            print("✓ Sin errores semanticos detectados.")
+            print("[OK] Sin errores semanticos detectados.")
 
         # also export decorations + errors + snapshots to JSON in cwd
         out = {

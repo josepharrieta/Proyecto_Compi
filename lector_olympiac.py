@@ -20,17 +20,7 @@ Dependencias:
 
 import os
 import sys
-<<<<<<< Updated upstream
-
-from flask import json
-=======
-import io
-
-# Configurar encoding para Windows
-if sys.platform == 'win32':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
->>>>>>> Stashed changes
+import json
 from explorador import AnalizadorLexico
 from analizador_sintactico import parse_from_tokens, asaNode
 try:

@@ -1,44 +1,44 @@
 {
   "decorations": {
-    "1535082275680": {
+    "1961849980352": {
       "definicion": "UsainBolt",
       "tipo": "entity:Deportista"
     },
-    "1535082275728": {
+    "1961849980400": {
       "definicion": "MichaelPhelps",
       "tipo": "entity:Deportista"
     },
-    "1535082275776": {
+    "1961849980448": {
       "definicion": "SimoneBiles",
       "tipo": "entity:Deportista"
     },
-    "1535082275824": {
+    "1961849980496": {
       "definicion": "NovaLachance",
       "tipo": "entity:Deportista"
     },
-    "1535082275872": {
+    "1961849980544": {
       "definicion": "LuisaSonza",
       "tipo": "entity:Deportista"
     },
-    "1535082276160": {
+    "1961849980832": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082276256": {
+    "1961849980928": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082276352": {
+    "1961849981024": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082276496": {
+    "1961849981168": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -50,7 +50,7 @@
         "entity:Deportista"
       ]
     },
-    "1535082276544": {
+    "1961849981216": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -62,7 +62,7 @@
         "entity:Deportista"
       ]
     },
-    "1535082276592": {
+    "1961849981264": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -74,51 +74,51 @@
         "entity:Deportista"
       ]
     },
-    "1535082277024": {
+    "1961849981696": {
       "tipo": "repetir",
       "count": "3"
     },
-    "1535082277120": {
+    "1961849981792": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082277264": {
+    "1961849981936": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082277408": {
+    "1961849982080": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082277840": {
+    "1961849982512": {
       "tipo": "repetir",
       "count": "2"
     },
-    "1535082277936": {
+    "1961849982608": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082278080": {
+    "1961849982752": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082278224": {
+    "1961849982896": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082278608": {
+    "1961849983280": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -130,7 +130,7 @@
         "entity:Deportista"
       ]
     },
-    "1535082278704": {
+    "1961849983376": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -142,7 +142,7 @@
         "entity:Deportista"
       ]
     },
-    "1535082278800": {
+    "1961849983472": {
       "tipo": "int",
       "name": "Comparar",
       "args": [
@@ -154,17 +154,33 @@
         "entity:Deportista"
       ]
     },
-    "1535082279232": {
+    "1961849983904": {
       "tipo": "repetir",
       "count": "2"
     },
-    "1535082279328": {
+    "1961849984000": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "1535082279472": {
+    "1961849984144": {
+      "tipo": "void",
+      "args_types": [
+        "entity:Deportista"
+      ]
+    },
+    "1961849984960": {
+      "tipo": "repetir_hasta",
+      "condicion": "2"
+    },
+    "1961849984720": {
+      "tipo": "void",
+      "args_types": [
+        "entity:Deportista"
+      ]
+    },
+    "1961849984864": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
@@ -174,7 +190,7 @@
   "errors": [],
   "snapshots": [
     {
-      "when": "2025-11-26T05:21:05.787300",
+      "when": "2025-11-26T05:40:17.503215",
       "node": "Deportista",
       "line": 9,
       "table": {
@@ -189,7 +205,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:21:05.787300",
+      "when": "2025-11-26T05:40:17.503215",
       "node": "Deportista",
       "line": 10,
       "table": {
@@ -210,7 +226,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:21:05.787300",
+      "when": "2025-11-26T05:40:17.503215",
       "node": "Deportista",
       "line": 11,
       "table": {
@@ -237,7 +253,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:21:05.787300",
+      "when": "2025-11-26T05:40:17.504224",
       "node": "Deportista",
       "line": 12,
       "table": {
@@ -270,7 +286,7 @@
       }
     },
     {
-      "when": "2025-11-26T05:21:05.787300",
+      "when": "2025-11-26T05:40:17.504224",
       "node": "Deportista",
       "line": 13,
       "table": {

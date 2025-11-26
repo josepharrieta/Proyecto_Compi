@@ -159,7 +159,7 @@ class AnalizadorLexico:
         (TipoToken.COMENTARIO, r'^;.*', "Comentario de línea completa"),
         (TipoToken.DECLARACION_ENTIDAD, r'^(Deportista|Lista)', "Declaración de entidad del dominio"),
         (TipoToken.TIPO_DATO_DOMINIO, r'^(Pais|Deporte|Resultado)', "Tipo de dato específico del dominio"),
-        (TipoToken.ESTRUCTURA_CONTROL_FLUJO, r'^(si|entonces|sino|endif|Repetir|RepetirHasta|FinRep|FinRepHast)', "Estructura de control de flujo"),
+        (TipoToken.ESTRUCTURA_CONTROL_FLUJO, r'^(si|entonces|sino|endif|RepetirHasta|Repetir|FinRepHast|FinRep)', "Estructura de control de flujo"),
         (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
         (TipoToken.LITERAL_CADENA, r'^("[^"]*"|\'[^\']*\')', "Cadenas literales entre comillas"),
         # Palabras clave del dominio extendidas (competencias, fases, etc.)

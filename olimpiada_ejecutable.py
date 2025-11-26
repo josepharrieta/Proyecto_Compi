@@ -58,15 +58,17 @@ comparar('LuisaSonza', 'UsainBolt')  # resultado descartado
 # ; ============================================================================
 # ; FASE 4: CICLOS - REPETICIÓN SIMPLE
 # ; ============================================================================
-narrar('UsainBolt')
-narrar('MichaelPhelps')
-narrar('SimoneBiles')
+for _i in range(3):
+    narrar('UsainBolt')
+    narrar('MichaelPhelps')
+    narrar('SimoneBiles')
 # ; ============================================================================
 # ; FASE 5: CICLOS CON NARRACIONES MÚLTIPLES
 # ; ============================================================================
-narrar('SimoneBiles')
-narrar('LuisaSonza')
-narrar('NovaLachance')
+for _i in range(2):
+    narrar('SimoneBiles')
+    narrar('LuisaSonza')
+    narrar('NovaLachance')
 # ; ============================================================================
 # ; FASE 6: MÁS COMPARACIONES EN SECUENCIA
 # ; ============================================================================
@@ -76,8 +78,15 @@ comparar('LuisaSonza', 'UsainBolt')  # resultado descartado
 # ; ============================================================================
 # ; FASE 7: OTRO CICLO DE COMPETENCIA
 # ; ============================================================================
-narrar('UsainBolt')
-narrar('SimoneBiles')
+for _i in range(2):
+    narrar('UsainBolt')
+    narrar('SimoneBiles')
+# ; ============================================================================
+# ; FASE 8: REPETIR HASTA - CICLOS CON CONTADOR
+# ; ============================================================================
+for _j in range(2):
+    narrar('UsainBolt')
+    narrar('SimoneBiles')
 # ; ============================================================================
 # ; FIN DEL PROGRAMA
 # ; ============================================================================
