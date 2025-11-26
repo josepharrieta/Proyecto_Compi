@@ -153,9 +153,7 @@ class VisitorOlympiac:
         self.emit(f"if {cond_py}:")
         self.indent_level += 1
         for h in node.hijos:
-            # Si tu AST incluye rama 'Sino' como nodo separado dentro, detectarla aquí.
             if h.tipo == 'Sino':
-                # cerrar if y abrir else
                 self.indent_level -= 1
                 self.emit("else:")
                 self.indent_level += 1
@@ -165,9 +163,61 @@ class VisitorOlympiac:
                 self.visit(h)
         self.indent_level -= 1
 
-    def visit_Repetir(self, node: asaNode):
-        count = node.contenido if node.contenido else '1'
-        self.emit(f"for _ in range(int({count})):")
+    def visit_RepetirHasta(self, node: asaNode):
+        # Traduce como while not condición (simplificación)
+        cond_expr = self._translate_condition(node.contenido)
+        self.emit(f"while not ({cond_expr}):")
+        self.indent_level += 1
+        for h in node.hijos:
+            self.visit(h)
+        self.indent_level -= 1
+
+    def visit_AccionStub(self, node: asaNode):
+        # Emite comentario de bloque de acción de competencia
+        self.emit(f"# Acción competencia: {node.contenido}")
+        self.indent_level += 1
+        for h in node.hijos:
+            self.visit(h)
+        self.indent_level -= 1
+
+    def visit_Resultado(self, node: asaNode):
+        valores = node.atributos.get('valores', [])
+        if len(valores) == 2 and all(v is not None for v in valores):
+            self.emit(f"# Resultado registrado: {valores[0]} - {valores[1]}")
+        else:
+            self.emit("# ERROR Resultado incompleto")
+
+    def visit_ResultadoExtra(self, node: asaNode):
+        self.emit("# ResultadoExtra (listaRes) marcador adicional")
+
+    def visit_Empate(self, node: asaNode):
+        self.emit("# Empate detectado")
+
+    def visit_Partido(self, node: asaNode):
+        paisA = node.atributos.get('paisA','')
+        paisB = node.atributos.get('paisB','')
+        self.emit(f"# Partido: {paisA} vs {paisB}")
+        self.indent_level += 1
+        for h in node.hijos:
+            self.visit(h)
+        self.indent_level -= 1
+
+    def visit_Carrera(self, node: asaNode):
+        self.emit("# Carrera iniciada")
+        self.indent_level += 1
+        for h in node.hijos:
+            self.visit(h)
+        self.indent_level -= 1
+
+    def visit_Rutina(self, node: asaNode):
+        self.emit("# Rutina iniciada")
+        self.indent_level += 1
+        for h in node.hijos:
+            self.visit(h)
+        self.indent_level -= 1
+
+    def visit_Combate(self, node: asaNode):
+        self.emit("# Combate iniciado")
         self.indent_level += 1
         for h in node.hijos:
             self.visit(h)

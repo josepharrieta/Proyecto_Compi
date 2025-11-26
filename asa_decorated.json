@@ -1,46 +1,39 @@
 {
   "decorations": {
-    "2274766069648": {
+    "2254480832016": {
       "definicion": "atleta1",
       "tipo": "entity:Deportista"
     },
-    "2274762210832": {
+    "2254485412160": {
       "definicion": "atleta2",
       "tipo": "entity:Deportista"
     },
-    "2274766618704": {
-      "tipo": "list:Deportista",
-      "nombre": "competidores"
+    "2254480882960": {
+      "ref": null
     },
-    "2274765535312": {
+    "2254476738096": {
       "tipo": "condicional"
     },
-    "2274765533008": {
+    "2254480664912": {
       "tipo": "void",
       "args_types": [
         "entity:Deportista"
       ]
     },
-    "2274766282704": {
+    "2254480600304": {
       "tipo": "condicional"
     },
-    "2274762339056": {
-      "tipo": "void",
-      "args_types": [
-        "entity:Deportista"
-      ]
-    },
-    "2274766048336": {
+    "2254480905552": {
       "tipo": "repetir",
       "count": "3"
     },
-    "2274766511712": {
+    "2254485572320": {
       "tipo": "input",
       "args": [
         "entrenamiento"
       ]
     },
-    "2274766048144": {
+    "2254480905360": {
       "tipo": "void",
       "args_types": [
         "unknown"
@@ -49,7 +42,13 @@
   },
   "errors": [
     {
-      "message": "Identificador 'progreso' usado antes de ser declarado.",
+      "message": "[SEM] Identificador no declarado 'competidores' antes de su uso",
+      "line": 4,
+      "col": 0,
+      "severity": "ERROR"
+    },
+    {
+      "message": "[SEM] Identificador no declarado 'progreso' antes de su uso",
       "line": 14,
       "col": 0,
       "severity": "ERROR"
@@ -57,7 +56,7 @@
   ],
   "snapshots": [
     {
-      "when": "2025-11-09T23:48:11.986239",
+      "when": "2025-11-22T07:18:52.829917",
       "node": "Deportista",
       "line": 2,
       "table": {
@@ -72,7 +71,7 @@
       }
     },
     {
-      "when": "2025-11-09T23:48:11.986442",
+      "when": "2025-11-22T07:18:52.830041",
       "node": "Deportista",
       "line": 3,
       "table": {
@@ -87,33 +86,6 @@
             "name": "atleta2",
             "type": "entity:Deportista",
             "defined_line": 3,
-            "scope_level": 0
-          }
-        }
-      }
-    },
-    {
-      "when": "2025-11-09T23:48:11.986623",
-      "node": "Lista",
-      "line": 4,
-      "table": {
-        "scope_0": {
-          "atleta1": {
-            "name": "atleta1",
-            "type": "entity:Deportista",
-            "defined_line": 2,
-            "scope_level": 0
-          },
-          "atleta2": {
-            "name": "atleta2",
-            "type": "entity:Deportista",
-            "defined_line": 3,
-            "scope_level": 0
-          },
-          "competidores": {
-            "name": "competidores",
-            "type": "list:Deportista",
-            "defined_line": 4,
             "scope_level": 0
           }
         }

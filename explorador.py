@@ -160,9 +160,11 @@ class AnalizadorLexico:
         (TipoToken.DECLARACION_ENTIDAD, r'^(Deportista|Lista)', "Declaración de entidad del dominio"),
         (TipoToken.TIPO_DATO_DOMINIO, r'^(Pais|Deporte|Resultado)', "Tipo de dato específico del dominio"),
         (TipoToken.ESTRUCTURA_CONTROL_FLUJO, r'^(si|entonces|sino|endif|Repetir|RepetirHasta|FinRep|FinRepHast)', "Estructura de control de flujo"),
-    (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
-    (TipoToken.LITERAL_CADENA, r'^("[^"]*"|\'[^\']*\')', "Cadenas literales entre comillas"),
-        (TipoToken.PALABRA_CLAVE, r'^(preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|finact|ceremonia_medallas|competencia_oficial|partido_clasificatorio)', "Palabras clave del dominio"),
+        (TipoToken.INVOCACION_FUNCION, r'^(narrar\(|Comparar\(|input\()', "Invocación de función del sistema"),
+        (TipoToken.LITERAL_CADENA, r'^("[^"]*"|\'[^\']*\')', "Cadenas literales entre comillas"),
+        # Palabras clave del dominio extendidas (competencias, fases, etc.)
+        (TipoToken.PALABRA_CLAVE, r'^(preparacion|finprep|InicioCarrera|correr|finCarr|InicioRutina|ejecutar|finRuti|InicioCombate|finComb|finact|ceremonia_medallas|competencia_oficial|partido_clasificatorio|Medallas|Ganador)', "Palabras clave del dominio"),
+        # ResultadoExtra y Empate según gramática avanzada
         (TipoToken.RESULTADO_ADICIONAL, r'^(listaRes)', "Token específico para listas de resultados"),
         (TipoToken.CONDICION_EMPATE, r'^(empate)', "Token específico para condiciones de empate"),
         (TipoToken.OPERADOR_COMPARACION, r'^(==|!=|>=|<=|>|<)', "Operador de comparación lógica"),
@@ -256,7 +258,7 @@ class AnalizadorLexico:
         Salida:
             list: Lista de diccionarios con información de cada error
         """
-        return self.errores_detallados.copy()
+        return self.errores_detalladas.copy()
 
     def obtener_resumen(self):
         """
@@ -346,7 +348,7 @@ class AnalizadorLexico:
                         'columna': posicion_actual + 1,
                         'mensaje': f"ERROR LEXICO: {tipo_error} {caracter_mostrable} en linea {numero_linea}, columna {posicion_actual + 1}"
                     }
-                    self.errores_detallados.append(error_info)
+                    self.errores_detalladas.append(error_info)
                     
                 except Exception as e:
                     error_info = {
@@ -356,7 +358,7 @@ class AnalizadorLexico:
                         'columna': posicion_actual + 1,
                         'mensaje': f"ERROR LEXICO: caracter problematico (ord={ord(caracter_problematico)}) en linea {numero_linea}, columna {posicion_actual + 1}"
                     }
-                    self.errores_detallados.append(error_info)
+                    self.errores_detalladas.append(error_info)
                 
                 self.contador_errores_lexicos += 1
                 posicion_actual += 1

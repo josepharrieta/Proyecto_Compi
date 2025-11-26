@@ -96,6 +96,12 @@ def enviar_a_analizador_sintactico(tokens):
     """
     # Parsear tokens y construir ASA
     asa = parse_from_tokens(tokens)
+    parser_errors = []
+    if hasattr(asa, 'atributos'):  # no cambia
+        pass
+    # obtener errores si parse_from_tokens retorna parser con errores (ajuste)
+    # Cambiar parse_from_tokens para devolver parser? (Simplificación: inspeccionar luego)
+    # Añadir extracción después de parseo si se expone Parser.errors
     
     return asa
 
@@ -286,6 +292,18 @@ def main():
         # PASO 3: Enviar tokens al analizador sintáctico
         print("[PASO 3] Enviando tokens al analizador sintáctico...")
         asa = enviar_a_analizador_sintactico(tokens)
+        # Mostrar errores sintácticos si fueron adjuntados
+        parser_errs = []
+        if isinstance(asa.atributos, dict) and 'parser_errors' in asa.atributos:
+            parser_errs = asa.atributos.get('parser_errors', [])
+            if parser_errs:
+                print(f"[PARSE-ERRORES] Se detectaron {len(parser_errs)} errores sintácticos:")
+                for e in parser_errs:
+                    linea = e.get('linea')
+                    col = e.get('columna')
+                    msg = e.get('mensaje')
+                    print(f"   - Linea {linea} Col {col}: {msg}")
+                print()
         print(f"   ✓ asa generado exitosamente\n")
 
         # Si se solicita generación, hacer eso primero

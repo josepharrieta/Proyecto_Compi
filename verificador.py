@@ -37,6 +37,9 @@ class Verifier:
             'narrar': {'args': None, 'arg_types': None, 'ret': 'void'},
             'input': {'args': 1, 'arg_types': None, 'ret': 'void'}
         }
+        # Pila para marcar contexto de nodos sintácticamente erróneos (ErrorSintactico)
+        # Dentro de estos no se reportan errores de "uso antes de declarar" para reducir ruido.
+        self.error_context_stack: List[bool] = []
 
     def run(self) -> List[SemanticError]:
         # start at global scope
@@ -49,7 +52,13 @@ class Verifier:
         line = 0
         if node and isinstance(node.atributos, dict) and 'linea' in node.atributos:
             line = node.atributos.get('linea', 0)
+        # Unificar formato de mensajes semánticos
+        if not msg.startswith('[SEM]'):
+            msg = f"[SEM] {msg}"
         self.errors.append(SemanticError(msg, line, column))
+
+    def _identificador_no_declarado(self, nombre: str, node: Optional[asaNode] = None):
+        self._add_error(f"Identificador no declarado '{nombre}' antes de su uso", node)
 
     def _decorate(self, node: asaNode, info: Dict[str, Any]):
         self.decorations[id(node)] = info
@@ -66,9 +75,13 @@ class Verifier:
     def _visit(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
         method = getattr(self, f"_visit_{node.tipo.lower()}", None)
         # before visiting children, call enter scope for compound nodes
-        if node.tipo in ("Condicional", "Repetir", "RepetirHasaa"):
+        # enter scope for compound nodes (update: RepetirHasta nombre corregido)
+        if node.tipo in ("Condicional", "Repetir", "RepetirHasta"):
             lvl = self.table.enter_scope()
             print(f"[TABLA] Enter scope -> nivel {lvl}")
+        # Marcar entrada a contexto de error sintáctico
+        if node.tipo == "ErrorSintactico":
+            self.error_context_stack.append(True)
         if method:
             method(node, parent, idx) if self._accepts_context(method) else method(node)
         else:
@@ -76,9 +89,15 @@ class Verifier:
             self._default_visit(node)
 
         # after children
-        if node.tipo in ("Condicional", "Repetir", "RepetirHasaa"):
+        if node.tipo in ("Condicional", "Repetir", "RepetirHasta"):
             lvl = self.table.exit_scope()
             print(f"[TABLA] Exit scope -> nivel {lvl}")
+        # Salir de contexto de error sintáctico si corresponde
+        if node.tipo == "ErrorSintactico" and self.error_context_stack:
+            self.error_context_stack.pop()
+
+    def _in_error_context(self) -> bool:
+        return any(self.error_context_stack)
 
     def _default_visit(self, node: asaNode):
         # visit children with context (parent and index)
@@ -131,8 +150,9 @@ class Verifier:
         for a in args:
             t = self._resolve_arg_type(a)
             if t == 'unknown' and isinstance(a, str) and ' ' not in a and not a.startswith('"') and not a.isdigit():
-                # likely an identifier used before declaration
-                self._add_error(f"Identificador '{a}' usado antes de ser declarado.", node)
+                # identificador sin declaración previa
+                if not self._in_error_context():
+                    self._identificador_no_declarado(a, node)
             local_types.append(t)
         self._decorate(node, {"tipo": "void", "args_types": local_types})
         self._default_visit(node)
@@ -158,7 +178,8 @@ class Verifier:
                         return
         entry = self.table.lookup(name)
         if not entry:
-            self._add_error(f"Identificador '{name}' usado antes de ser declarado.", node)
+            if not self._in_error_context():
+                self._identificador_no_declarado(name, node)
             self._decorate(node, {"ref": None})
         else:
             self._decorate(node, {"ref": entry.to_dict()})
@@ -187,7 +208,8 @@ class Verifier:
             arg_types = [self._resolve_arg_type(a) for a in args]
             for a, t in zip(args, arg_types):
                 if t == 'unknown' and isinstance(a, str) and not a.startswith('"') and not a.isdigit():
-                    self._add_error(f"Identificador '{a}' usado en llamada a '{name}' antes de ser declarado.", node)
+                    if not self._in_error_context():
+                        self._identificador_no_declarado(a, node)
             self._decorate(node, {"tipo": "unknown_call", "name": name, "args": args, "arg_types": arg_types})
         self._default_visit(node)
 
@@ -221,8 +243,12 @@ class Verifier:
             self._visit(c)
 
     def _visit_repetir(self, node: asaNode):
-        # node.contenido may be repetition count or expression text
         self._decorate(node, {"tipo": "repetir", "count": node.contenido})
+        for c in node.hijos:
+            self._visit(c)
+
+    def _visit_repetirhasta(self, node: asaNode):
+        self._decorate(node, {"tipo": "repetir_hasta", "condicion": node.contenido})
         for c in node.hijos:
             self._visit(c)
 
@@ -264,7 +290,8 @@ class Verifier:
         else:
             # unknown: mark and error
             self._decorate(node, {"tipo": "unknown", "ref": None})
-            self._add_error(f"Identificador '{name}' usado antes de ser declarado.", node)
+            if not self._in_error_context():
+                self._identificador_no_declarado(name, node)
 
     def _infer_type_from_node(self, node: asaNode) -> str:
         dec = self.decorations.get(id(node))
@@ -279,6 +306,79 @@ class Verifier:
             if entry:
                 return entry.type
         return 'unknown'
+
+    # Nodos adicionales de la gramática avanzada
+    def _visit_resultado(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        valores = node.atributos.get('valores', [])
+        completo = True
+        if len(valores) != 2:
+            self._add_error("Resultado requiere dos números", node)
+            completo = False
+        else:
+            # valores[0] y valores[1] pueden ser None si parser falló
+            if valores[0] is None:
+                self._add_error("Resultado incompleto: falta primer número", node)
+                completo = False
+            if valores[1] is None:
+                self._add_error("Resultado incompleto: falta segundo número", node)
+                completo = False
+        self._decorate(node, {"tipo": "resultado", "valores": valores, "completo": completo})
+
+    def _visit_resultadoextra(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        self._decorate(node, {"tipo": "resultado_extra"})
+
+    def _visit_empate(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        self._decorate(node, {"tipo": "empate"})
+
+    def _visit_accionstub(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        # Decorar acción genérica (Partido/Carrera/Combate/Rutina stub)
+        self._decorate(node, {"tipo": "accion_stub", "nombre": node.contenido})
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
+
+    def _visit_partido(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        paisA = node.atributos.get('paisA')
+        paisB = node.atributos.get('paisB')
+        if not paisA or not paisB:
+            self._add_error("Partido requiere ambos países", node)
+        self._decorate(node, {"tipo": "partido", "paisA": paisA, "paisB": paisB})
+        resultado_detectado = None
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
+            if c.tipo == 'Resultado':
+                resultado_detectado = c
+        if resultado_detectado and resultado_detectado.atributos.get('valores', [None, None])[1] is None:
+            self._add_error("Resultado en Partido antes de cierre está incompleto (segundo número faltante)", resultado_detectado)
+
+    def _visit_carrera(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        self._decorate(node, {"tipo": "carrera"})
+        resultado_detectado = None
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
+            if c.tipo == 'Resultado':
+                resultado_detectado = c
+        if resultado_detectado and resultado_detectado.atributos.get('valores', [None, None])[1] is None:
+            self._add_error("Resultado en Carrera antes de cierre está incompleto (segundo número faltante)", resultado_detectado)
+
+    def _visit_rutina(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        self._decorate(node, {"tipo": "rutina"})
+        resultado_detectado = None
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
+            if c.tipo == 'Resultado':
+                resultado_detectado = c
+        if resultado_detectado and resultado_detectado.atributos.get('valores', [None, None])[1] is None:
+            self._add_error("Resultado en Rutina antes de cierre está incompleto (segundo número faltante)", resultado_detectado)
+
+    def _visit_combate(self, node: asaNode, parent: Optional[asaNode] = None, idx: int = 0):
+        self._decorate(node, {"tipo": "combate"})
+        resultado_detectado = None
+        for i, c in enumerate(node.hijos):
+            self._visit(c, node, i)
+            if c.tipo == 'Resultado':
+                resultado_detectado = c
+        if resultado_detectado and resultado_detectado.atributos.get('valores', [None, None])[1] is None:
+            self._add_error("Resultado en Combate antes de cierre está incompleto (segundo número faltante)", resultado_detectado)
 
     # Public printing utility
     def print_decorated(self):
