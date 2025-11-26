@@ -20,8 +20,10 @@ Dependencias:
 
 import os
 import sys
+
+from flask import json
 from explorador import AnalizadorLexico
-from analizador_sintactico import parse_from_tokens
+from analizador_sintactico import parse_from_tokens, asaNode
 try:
     from verificador import Verifier
 except Exception:
@@ -271,18 +273,24 @@ def main():
         # PASO 1: Leer archivo
         print("[PASO 1] Leyendo archivo...")
         lineas_codigo = leer_archivo_olympiac(ruta)
-        print(f"   ✓ {len(lineas_codigo)} líneas leídas\n")
+        print(f"     {len(lineas_codigo)} líneas leídas\n")
         
         # PASO 2: Enviar al explorador (analizador léxico)
         print("[PASO 2] Enviando código al explorador (analizador léxico)...")
         tokens, analizador = enviar_a_explorador(lineas_codigo)
-        print(f"   ✓ {len(tokens)} tokens recibidos del explorador")
+        print(f"   {len(tokens)} tokens recibidos del explorador")
+        
+        # Mostrar errores léxicos SI EXISTEN
         if analizador.contador_errores_lexicos > 0:
-            print(f"   ⚠ {analizador.contador_errores_lexicos} errores léxicos detectados")
+            print(f"\n[ERRORES LÉXICOS] Se detectaron {analizador.contador_errores_lexicos} errores:")
+            for err in analizador.obtener_errores():
+                print(f"   - Línea {err['linea']} Col {err['columna']}: {err['tipo']} {err['caracter']}")
+        else:
+            print(f"    Sin errores léxicos")
         print()
         
-        # Mostrar algunos tokens
-        print("   Primeros tokens encontrados:")
+        # Mostrar algunos tokens (opcional, más limpio)
+        print("   Primeros 10 tokens:")
         for i, token in enumerate(tokens[:10]):
             print(f"      {token}")
         if len(tokens) > 10:
@@ -292,68 +300,125 @@ def main():
         # PASO 3: Enviar tokens al analizador sintáctico
         print("[PASO 3] Enviando tokens al analizador sintáctico...")
         asa = enviar_a_analizador_sintactico(tokens)
-        # Mostrar errores sintácticos si fueron adjuntados
+        
+        # Mostrar errores sintácticos
         parser_errs = []
         if isinstance(asa.atributos, dict) and 'parser_errors' in asa.atributos:
             parser_errs = asa.atributos.get('parser_errors', [])
             if parser_errs:
-                print(f"[PARSE-ERRORES] Se detectaron {len(parser_errs)} errores sintácticos:")
+                print(f"\n[ERRORES SINTÁCTICOS] Se detectaron {len(parser_errs)} errores:")
                 for e in parser_errs:
                     linea = e.get('linea')
                     col = e.get('columna')
                     msg = e.get('mensaje')
-                    print(f"   - Linea {linea} Col {col}: {msg}")
-                print()
-        print(f"   ✓ asa generado exitosamente\n")
+                    print(f"   - Línea {linea} Col {col}: {msg}")
+                print()  # línea en blanco después de errores
+            else:
+                print(f"    Sin errores sintácticos")
+        
+        print(f"    ASA generado exitosamente\n")
 
-        # Si se solicita generación, hacer eso primero
+        # Si se solicita generación, hacer eso y terminar
         if generar:
             if construir_codigo:
                 print("[PASO 4 (GENERACIÓN)] Generando código Python...")
                 codigo_python = construir_codigo(asa)
-                salida_final = salida_gen or 'programa_generado.py'
+                salida_final = salida_gen or 'salida.py'
                 with open(salida_final, 'w', encoding='utf-8') as f:
                     f.write(codigo_python)
-                print(f"   ✓ Código generado en: {salida_final}")
+                print(f"Código generado en: {salida_final}")
                 print(f"   Para ejecutar: python {salida_final}\n")
             else:
-                print("   ✗ Generador no disponible (construir_codigo no cargado)\n")
+                print("Generador no disponible\n")
             return
         
-        # Mostrar asa (análisis normal, no generación)
-        print("[RESULTADO] Árbol de Sintaxis Abstracta (asa):")
-        print("-" * 80)
-        for linea in asa.preorder_lines():
-            print(linea)
-
-        # PASO 4: Ejecutar verificador semántico (si está disponible)
+        # ============================================================
+        # PASO 4: VERIFICADOR SEMÁNTICO (ANÁLISIS PRINCIPAL)
+        # ============================================================
+        print("=" * 80)
+        print("[PASO 4] ANÁLISIS SEMÁNTICO")
+        print("=" * 80)
+        
         if Verifier:
             try:
-                print('\n[SEMANTICA] Ejecutando verificador semántico...')
+                print("\nEjecutando verificador semántico...\n")
                 verifier = Verifier(asa)
                 errores_sem = verifier.run()
-                verifier.print_decorated()
+                
+                # ======== MOSTRAR ASA DECORADO ========
+                print("-" * 80)
+                print("ASA DECORADO (con anotaciones semánticas):")
+                print("-" * 80)
+                def imprimir_decorado(n: asaNode, nivel: int = 0):
+                    indent = '  ' * nivel
+                    print(f"{indent}<\"{n.tipo}\", \"{n.contenido}\", {n.atributos}>")
+                    dec = verifier.decorations.get(id(n))
+                    if dec:
+                        print(f"{indent}  Decorado: {dec}")
+                    for h in n.hijos:
+                        imprimir_decorado(h, nivel + 1)
+                
+                imprimir_decorado(asa)
+                print()
+                
+                # ======== MOSTRAR ERRORES SEMÁNTICOS ========
                 if errores_sem:
-                    print(f"\n\n[SEMANTICA] Se detectaron {len(errores_sem)} errores semánticos.")
+                    print("-" * 80)
+                    print(f"ERRORES SEMÁNTICOS DETECTADOS ({len(errores_sem)}):")
+                    print("-" * 80)
+                    for e in errores_sem:
+                        print(f"  {e}")
+                    print()
                 else:
-                    print("\n\n[SEMANTICA] Sin errores semánticos detectados.")
-                print(f"Decorations exported to: {os.path.join(os.getcwd(), 'asa_decorated.json')}")
+                    print("-" * 80)
+                    print("Sin errores semánticos detectados.")
+                    print("-" * 80)
+                    print()
+                
+                # ======== MOSTRAR TABLA DE SÍMBOLOS ========
+                print("-" * 80)
+                print("TABLA DE SÍMBOLOS (snapshot final):")
+                print("-" * 80)
+                print(verifier.table)
+                print()
+                
+                # ======== EXPORTAR A JSON ========
+                ruta_json = os.path.join(os.getcwd(), 'asa_decorated.json')
+                decorations_export = {
+                    'decorations': {str(k): v for k, v in verifier.decorations.items()},
+                    'errors': [{'mensaje': e.message, 'linea': e.line, 'columna': e.column, 'severidad': e.severity} for e in errores_sem],
+                    'snapshots': verifier.snapshots
+                }
+                with open(ruta_json, 'w', encoding='utf-8') as f:
+                    json.dump(decorations_export, f, ensure_ascii=False, indent=2)
+                print(f"Decoraciones exportadas a: {ruta_json}\n")
+                
             except Exception as ex:
-                print(f"[SEMANTICA] Error al ejecutar el verificador: {ex}")
+                print(f"Error al ejecutar el verificador: {ex}")
+                import traceback
+                traceback.print_exc()
+        else:
+            print("⚠ Verificador semántico no disponible (módulo no cargado)\n")
         
-        print("\n" + "=" * 80)
-        print("PROCESAMIENTO COMPLETADO EXITOSAMENTE")
+        # ============================================================
+        # RESUMEN FINAL
+        # ============================================================
+        print("=" * 80)
+        print("PROCESAMIENTO COMPLETADO")
         print("=" * 80)
         print(f"Líneas procesadas: {len(lineas_codigo)}")
         print(f"Tokens generados: {len(tokens)}")
         print(f"Errores léxicos: {analizador.contador_errores_lexicos}")
-        print(f"asa nodos raíz: {asa.tipo}")
+        print(f"Errores sintácticos: {len(parser_errs)}")
+        if Verifier and 'errores_sem' in locals():
+            print(f"Errores semánticos: {len(errores_sem)}")
+        print(f"ASA nodos raíz: {asa.tipo}")
         print("=" * 80)
         
     except FileNotFoundError as e:
-        print(f"\n ERROR: {e}")
+        print(f"\nERROR: {e}")
     except Exception as e:
-        print(f"\n ERROR: {e}")
+        print(f"\nERROR: {e}")
         import traceback
         traceback.print_exc()
 
